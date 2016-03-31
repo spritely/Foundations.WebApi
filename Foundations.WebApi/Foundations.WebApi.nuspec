@@ -13,8 +13,19 @@
     <description>Provides a default starting point for setting up a new WebApi service which includes Its.Configuration and Its.Log with a set of classes that preconfigure numerous defaults.</description>
     <copyright>Copyright (C) 2016</copyright>
     <tags>Spritely WebApi project foundation</tags>
+    <dependencies>
+        <group>
+            <dependency id="Its.Configuration" version="1.0.6" />
+            <dependency id="Its.Log" version="2.9.13" />
+            <dependency id="Microsoft.AspNet.WebApi.OwinSelfHost" version="5.2.3" />
+            <dependency id="Microsoft.Owin.Hosting" version="3.0.1" />
+            <dependency id="Microsoft.Owin.Host.HttpListener" version="3.0.1" />
+            <dependency id="Newtonsoft.Json" version="8.0.3" />
+            <dependency id="SimpleInjector.Integration.WebApi" version="3.1.2" />
+        </group>
+    </dependencies>
   </metadata>
-    <files>
+  <files>
     <file src="Spritely.Foundations.WebApi.dll" target="lib\net45" />
     <file src="Spritely.Foundations.WebApi.pdb" target="lib\net45" />
   </files>
