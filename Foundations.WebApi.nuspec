@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Spritely.Foundations.WebApi</id>
+    <version>$version$</version>
+    <title>Spritely.Foundations.WebApi</title>
+    <authors>Spritely Developers</authors>
+    <owners>Spritely Developers</owners>
+    <language>en-US</language>
+    <licenseUrl>https://github.com/spritely/Foundations.WebApi/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/spritely/Foundations.WebApi</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Provides a default starting point for setting up a new WebApi service which includes Its.Configuration and Its.Log with a set of classes that preconfigure numerous defaults.</description>
+    <copyright>Copyright (C) 2016</copyright>
+    <tags>Spritely WebApi project foundation</tags>
+  </metadata>
+    <files>
+    <file src="Spritely.Foundations.WebApi.dll" target="lib\net45" />
+    <file src="Spritely.Foundations.WebApi.pdb" target="lib\net45" />
+  </files>
+</package>

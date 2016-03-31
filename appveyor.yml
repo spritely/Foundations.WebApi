@@ -1,0 +1,51 @@
+# {build} is required by AppVeyor to uniquely identify its builds on the url
+# It is a continuously incrementing number so when used it violates the reset
+# smaller build parts rule of semantic versioning. Therefore we introduce a
+# second environment variable semantic_version.
+version: 0.1.0.{build}
+
+os: Visual Studio 2015
+
+environment:
+  RunCodeAnalysis: true
+
+configuration:
+  - Debug
+  - Release
+
+cache:
+  - packages -> **\packages.config
+
+install:
+  - set semantic_version=%APPVEYOR_BUILD_VERSION:~0,5%
+  - echo Version - %semantic_version%
+  - nuget restore
+
+nuget:
+  disable_publish_on_pr: true
+
+assembly_info:
+  patch: true
+  file: '**\AssemblyInfo.*'
+  assembly_version: '$(semantic_version).{build}'
+  assembly_file_version: '$(semantic_version).{build}'
+  assembly_informational_version: '$(semantic_version)'
+
+build:
+  project: Build.proj
+  parallel: true
+  verbosity: normal
+
+after_test:
+  - nuget pack "%APPVEYOR_BUILD_FOLDER%\Foundations.WebApi\Foundations.WebApi.nuspec" -BasePath "%APPVEYOR_BUILD_FOLDER%\Foundations.WebApi\bin\%configuration%" -Properties "Configuration=%configuration%;Platform=%platform%;Version=%semantic_version%" -OutputDirectory "%TEMP%" -Verbosity detailed
+  - appveyor PushArtifact "%TEMP%\Spritely.Foundations.WebApi.%semantic_version%.nupkg"
+
+deploy:
+  - provider: NuGet
+    on:
+      branch: master
+      configuration: Release
+    api_key:
+      secure: dUMLXnYuqF7ORswtDCtj2XgKlpLMKrXZrq9m/FEN2xu0vTClejXqADyxMEawTs2W
+    skip_symbols: true
+    artifact: /.*\.nupkg/
