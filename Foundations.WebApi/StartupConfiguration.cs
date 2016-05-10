@@ -9,6 +9,7 @@ namespace Spritely.Foundations.WebApi
 {
     using Its.Configuration;
     using Newtonsoft.Json;
+    using SimpleInjector;
     using Spritely.Recipes;
     using System.Collections.Generic;
 
@@ -18,6 +19,24 @@ namespace Spritely.Foundations.WebApi
     /// </summary>
     public class StartupConfiguration
     {
+        private Container container = null;
+
+        /// <summary>
+        /// Gets or sets the dependency injection container.
+        /// </summary>
+        /// <value>The dependency injection container.</value>
+        public Container Container
+        {
+            get
+            {
+                return (container = container ?? new Container());
+            }
+            set
+            {
+                container = value;
+            }
+        }
+
         private JsonSerializerSettings defaultJsonSettings = null;
 
         /// <summary>
