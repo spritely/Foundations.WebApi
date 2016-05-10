@@ -102,11 +102,6 @@ namespace Spritely.Foundations.WebApi
         }
 
         /// <summary>
-        /// The container initializers.
-        /// </summary>
-        public ICollection<InitializeContainer> ContainerInitializers { get; } = new List<InitializeContainer>();
-
-        /// <summary>
         /// The HTTP configuration initializers.
         /// </summary>
         public ICollection<InitializeHttpConfiguration> HttpConfigurationInitializers { get; } = new List<InitializeHttpConfiguration>();

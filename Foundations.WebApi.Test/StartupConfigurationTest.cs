@@ -17,7 +17,7 @@ namespace Spritely.Foundations.WebApi.Test
     public class StartupConfigurationTest
     {
         [Test]
-        public void Container_defaults_to_using_WebApi_policy()
+        public void Container_defaults_to_using_WebApiRequestLifestyle()
         {
             var configuration = new StartupConfiguration();
             Assert.That(configuration.Container, Is.Not.Null);

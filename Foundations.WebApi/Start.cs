@@ -13,7 +13,6 @@ namespace Spritely.Foundations.WebApi
     using Newtonsoft.Json;
     using Owin;
     using Recipes;
-    using SimpleInjector;
     using SimpleInjector.Integration.WebApi;
     using System;
     using System.Globalization;
@@ -56,18 +55,12 @@ namespace Spritely.Foundations.WebApi
 
                 ConfigureJson(startupConfiguration);
 
-                var container = startupConfiguration.Container;
-                startupConfiguration.ContainerInitializers.ForEach(initializeContainer => initializeContainer(container));
-
                 var httpConfiguration = new HttpConfiguration();
                 startupConfiguration.HttpConfigurationInitializers.ForEach(initializeHttpConfiguration => initializeHttpConfiguration(httpConfiguration));
 
                 appBuilder.UseWebApi(httpConfiguration);
 
-                container.RegisterWebApiControllers(httpConfiguration);
-                container.Verify();
-
-                httpConfiguration.DependencyResolver = new SimpleInjectorWebApiDependencyResolver(container);
+                httpConfiguration.DependencyResolver = new SimpleInjectorWebApiDependencyResolver(startupConfiguration.Container);
 
                 Log.Write(Messages.Application_Started);
             }
