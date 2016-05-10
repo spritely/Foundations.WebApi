@@ -57,7 +57,6 @@ namespace Spritely.Foundations.WebApi
                 ConfigureJson(startupConfiguration);
 
                 var container = startupConfiguration.Container;
-                container.Options.DefaultScopedLifestyle = new WebApiRequestLifestyle();
                 startupConfiguration.ContainerInitializers.ForEach(initializeContainer => initializeContainer(container));
 
                 var httpConfiguration = new HttpConfiguration();

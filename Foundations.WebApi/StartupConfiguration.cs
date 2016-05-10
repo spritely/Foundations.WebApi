@@ -7,11 +7,12 @@
 
 namespace Spritely.Foundations.WebApi
 {
+    using System.Collections.Generic;
     using Its.Configuration;
     using Newtonsoft.Json;
     using SimpleInjector;
+    using SimpleInjector.Integration.WebApi;
     using Spritely.Recipes;
-    using System.Collections.Generic;
 
     /// <summary>
     /// A configuration object providing the ability to override default behaviors when initializing
@@ -19,6 +20,14 @@ namespace Spritely.Foundations.WebApi
     /// </summary>
     public class StartupConfiguration
     {
+        private static Container CreateContainer()
+        {
+            var c = new Container();
+            c.Options.DefaultScopedLifestyle = new WebApiRequestLifestyle();
+
+            return c;
+        }
+
         private Container container = null;
 
         /// <summary>
@@ -29,7 +38,7 @@ namespace Spritely.Foundations.WebApi
         {
             get
             {
-                return (container = container ?? new Container());
+                return container = container ?? CreateContainer();
             }
             set
             {
@@ -65,7 +74,7 @@ namespace Spritely.Foundations.WebApi
         {
             get
             {
-                return (deserializeConfigurationSettings = deserializeConfigurationSettings ?? ((type, serialized) => JsonConvert.DeserializeObject(serialized, type, JsonConfiguration.DefaultSerializerSettings)));
+                return (deserializeConfigurationSettings = deserializeConfigurationSettings ?? ((type, serialized) => JsonConvert.DeserializeObject(serialized, type, JsonConfiguration.CompactSerializerSettings)));
             }
             set
             {

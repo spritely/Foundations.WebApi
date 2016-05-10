@@ -11,6 +11,7 @@ namespace Spritely.Foundations.WebApi
     using System.Net.Http.Formatting;
     using System.Web.Http;
     using System.Web.Http.ExceptionHandling;
+    using Newtonsoft.Json.Serialization;
 
     /// <summary>
     /// A default implementation for registering HTTP configuration information for hosting a Web API service.
@@ -21,19 +22,19 @@ namespace Spritely.Foundations.WebApi
         /// A default implementation to initialize the HTTP configuration with a new
         /// DefaultWebApiConfig project with an ItsLogExceptionHandler.
         /// </summary>
-        public static InitializeHttpConfiguration InitializeHttpConfiguration { get; } = (config) => new DefaultWebApiConfig().Register(config);
+        public static InitializeHttpConfiguration InitializeHttpConfiguration { get; } = config => new DefaultWebApiConfig().Register(config);
 
         /// <summary>
         /// An implementation to initialize the HTTP configuration with a custom ExceptionLogger.
         /// </summary>
-        public static Func<IExceptionLogger, InitializeHttpConfiguration> InitializeHttpConfigurationWith { get; } = (exceptionLogger) =>
+        public static Func<IExceptionLogger, InitializeHttpConfiguration> InitializeHttpConfigurationWith { get; } = exceptionLogger =>
            {
                var webApiConfig = new DefaultWebApiConfig
                {
                    ExceptionLogger = exceptionLogger
                };
 
-               return (config) => webApiConfig.Register(config);
+               return config => webApiConfig.Register(config);
            };
 
         /// <summary>
@@ -53,8 +54,11 @@ namespace Spritely.Foundations.WebApi
                 throw new ArgumentNullException(nameof(httpConfiguration));
             }
 
-            httpConfiguration.Formatters.JsonFormatter.MediaTypeMappings.Add(
+            var jsonFormatter = httpConfiguration.Formatters.JsonFormatter;
+            jsonFormatter.MediaTypeMappings.Add(
                 new RequestHeaderMapping("Accept", "text/html", StringComparison.OrdinalIgnoreCase, true, "application/json"));
+
+            jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
 
             httpConfiguration.Routes.MapHttpRoute(
                 name: "DefaultApi",

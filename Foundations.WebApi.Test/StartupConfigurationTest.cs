@@ -7,20 +7,35 @@
 
 namespace Spritely.Foundations.WebApi.Test
 {
-    using Its.Log.Instrumentation;
-    using NUnit.Framework;
-    using Recipes;
     using System;
-    using System.Diagnostics;
-    using System.Globalization;
-    using System.IO;
-    using System.Linq;
-    using System.Text;
-    using System.Web.Http.ExceptionHandling;
+    using NUnit.Framework;
+    using Spritely.Recipes;
+    using SimpleInjector;
+    using SimpleInjector.Integration.WebApi;
 
     [TestFixture]
     public class StartupConfigurationTest
     {
+        [Test]
+        public void Container_defaults_to_using_WebApi_policy()
+        {
+            var configuration = new StartupConfiguration();
+            Assert.That(configuration.Container, Is.Not.Null);
+            Assert.That(configuration.Container.Options.DefaultScopedLifestyle, Is.TypeOf<WebApiRequestLifestyle>());
+        }
+
+        [Test]
+        public void Container_uses_value_if_provided()
+        {
+            var expected = new Container();
+            var configuration = new StartupConfiguration
+            {
+                Container = expected
+            };
+            
+            Assert.That(configuration.Container, Is.SameAs(expected));
+        }
+
         [Test]
         public void DefaultJsonSettings_defaults_to_CompactSerializerSettings()
         {

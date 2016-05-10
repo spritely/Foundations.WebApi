@@ -7,17 +7,13 @@
 
 namespace Spritely.Foundations.WebApi.Test
 {
-    using Its.Log.Instrumentation;
-    using NSubstitute;
-    using NUnit.Framework;
     using System;
-    using System.Diagnostics;
-    using System.Globalization;
-    using System.IO;
     using System.Linq;
-    using System.Text;
     using System.Web.Http;
     using System.Web.Http.ExceptionHandling;
+    using Newtonsoft.Json.Serialization;
+    using NSubstitute;
+    using NUnit.Framework;
 
     [TestFixture]
     public class DefaultWebApiConfigTest
@@ -68,6 +64,27 @@ namespace Spritely.Foundations.WebApi.Test
                 DefaultWebApiConfig.InitializeHttpConfiguration(httpConfiguration);
 
                 Assert.That(httpConfiguration.Routes.Count(), Is.EqualTo(1));
+            }
+        }
+
+        [Test]
+        public void Register_throws_on_null_arguments()
+        {
+            var defaultWebApiConfig = new DefaultWebApiConfig();
+            Assert.Throws<ArgumentNullException>(() => defaultWebApiConfig.Register(null));
+        }
+
+        [Test]
+        public void Register_configures_json_formatter()
+        {
+            var defaultWebApiConfig = new DefaultWebApiConfig();
+            using (var httpConfiguration = new HttpConfiguration())
+            {
+                defaultWebApiConfig.Register(httpConfiguration);
+
+                var jsonFormatter = httpConfiguration.Formatters.JsonFormatter;
+                
+                Assert.That(jsonFormatter.SerializerSettings.ContractResolver, Is.TypeOf<CamelCasePropertyNamesContractResolver>());
             }
         }
     }
