@@ -20,6 +20,7 @@ namespace Spritely.Foundations.WebApi
     /// </summary>
     public class StartupConfiguration
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Instance lives for the lifetime of the application.")]
         private static Container CreateContainer()
         {
             var c = new Container();
