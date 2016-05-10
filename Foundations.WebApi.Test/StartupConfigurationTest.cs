@@ -27,13 +27,15 @@ namespace Spritely.Foundations.WebApi.Test
         [Test]
         public void Container_uses_value_if_provided()
         {
-            var expected = new Container();
-            var configuration = new StartupConfiguration
+            using (var expected = new Container())
             {
-                Container = expected
-            };
-            
-            Assert.That(configuration.Container, Is.SameAs(expected));
+                var configuration = new StartupConfiguration
+                {
+                    Container = expected
+                };
+
+                Assert.That(configuration.Container, Is.SameAs(expected));
+            }
         }
 
         [Test]
