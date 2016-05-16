@@ -17,36 +17,6 @@ namespace Spritely.Foundations.WebApi.Test
     public class StartupConfigurationTest
     {
         [Test]
-        public void Container_defaults_to_using_WebApiRequestLifestyle()
-        {
-            var configuration = new StartupConfiguration();
-            Assert.That(configuration.Container, Is.Not.Null);
-            Assert.That(configuration.Container.Options.DefaultScopedLifestyle, Is.TypeOf<WebApiRequestLifestyle>());
-        }
-
-        [Test]
-        public void Container_uses_value_if_provided()
-        {
-            using (var expected = new Container())
-            {
-                var configuration = new StartupConfiguration
-                {
-                    Container = expected
-                };
-
-                Assert.That(configuration.Container, Is.SameAs(expected));
-            }
-        }
-
-        [Test]
-        public void DefaultJsonSettings_defaults_to_CompactSerializerSettings()
-        {
-            var configuration = new StartupConfiguration();
-            Assert.That(configuration.DefaultJsonSettings.Formatting, Is.EqualTo(JsonConfiguration.CompactSerializerSettings.Formatting));
-            Assert.That(configuration.DefaultJsonSettings.NullValueHandling, Is.EqualTo(JsonConfiguration.CompactSerializerSettings.NullValueHandling));
-        }
-
-        [Test]
         public void DefaultJsonSettings_uses_value_if_provided()
         {
             var expected = JsonConfiguration.DefaultSerializerSettings;

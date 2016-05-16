@@ -8,6 +8,13 @@
 namespace Spritely.Foundations.WebApi
 {
     using System.Web.Http;
+    using SimpleInjector;
+
+    /// <summary>
+    /// Delegate representing a container initialization function.
+    /// </summary>
+    /// <param name="container">The container.</param>
+    public delegate void InitializeContainer(Container container);
 
     /// <summary>
     /// Delegate representing log policy initialization function.

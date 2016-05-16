@@ -23,45 +23,20 @@ namespace Spritely.Foundations.WebApi
     /// </summary>
     public static class Start
     {
-        private static void ConfigureJson(StartupConfiguration startupConfiguration)
-        {
-            JsonConvert.DefaultSettings = () => startupConfiguration.DefaultJsonSettings;
-            Settings.Deserialize = startupConfiguration.DeserializeConfigurationSettings;
-        }
-
         /// <summary>
-        /// Call this from your Startup.Configuraion method to provide a default implementation with
-        /// a specified startup configuration.
+        /// Initializes with the specified startup configuration.
         /// </summary>
         /// <param name="startupConfiguration">The startup configuration.</param>
-        /// <param name="appBuilder">The application builder.</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "This is specifically designed to catch all exceptions.")]
-        public static void Configuration(StartupConfiguration startupConfiguration, IAppBuilder appBuilder)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "This is specifically designed to catch all exceptions when an application first starts up.")]
+        public static void Initialize(StartupConfiguration startupConfiguration = null)
         {
-            if (startupConfiguration == null)
-            {
-                throw new ArgumentNullException(nameof(startupConfiguration));
-            }
-
-            if (appBuilder == null)
-            {
-                throw new ArgumentNullException(nameof(appBuilder));
-            }
-
             try
             {
-                startupConfiguration.InitializeLogPolicy();
-                Log.Write(Messages.Application_Starting);
+                var configuration = startupConfiguration ?? new StartupConfiguration();
+                JsonConvert.DefaultSettings = () => configuration.DefaultJsonSettings;
+                Settings.Deserialize = configuration.DeserializeConfigurationSettings;
 
-                ConfigureJson(startupConfiguration);
-
-                var httpConfiguration = new HttpConfiguration();
-                startupConfiguration.HttpConfigurationInitializers.ForEach(initializeHttpConfiguration => initializeHttpConfiguration(httpConfiguration));
-
-                appBuilder.UseWebApi(httpConfiguration);
-
-                httpConfiguration.DependencyResolver = new SimpleInjectorWebApiDependencyResolver(startupConfiguration.Container);
-
+                configuration.InitializeLogPolicy();
                 Log.Write(Messages.Application_Started);
             }
             catch (Exception ex)
@@ -84,7 +59,8 @@ namespace Spritely.Foundations.WebApi
         {
             try
             {
-                ConfigureJson(startupConfiguration);
+                var configuration = startupConfiguration ?? new StartupConfiguration();
+                Settings.Deserialize = configuration.DeserializeConfigurationSettings;
                 var hostingSettings = Settings.Get<HostingSettings>();
 
                 using (WebApp.Start<TStartup>(hostingSettings.Url))

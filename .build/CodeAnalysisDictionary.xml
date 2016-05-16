@@ -8,6 +8,8 @@
          <Word>Api</Word>
          <Word>Cqrs</Word>
          <Word>deserializes</Word>
+         <Word>typeof</Word>
+         <Word>Jwt</Word>
       </Recognized>
       <Deprecated>
          <Term PreferredAlternate=""></Term>

@@ -1,0 +1,10 @@
+﻿{
+    "id": "3b076958-f5f0-4844-9c7e-806408b41e6f",
+    "name": "Test client",
+    "allowedServers": [
+        {
+            "issuer": "localhost",
+            "secret": "pu6txARocfowC1b3eNZEYuNcnTBGwEGfupX9kShMc8U"
+        }
+    ]
+}

@@ -12,6 +12,7 @@ namespace Spritely.Foundations.WebApi
     using System.Web.Http;
     using System.Web.Http.ExceptionHandling;
     using Newtonsoft.Json.Serialization;
+    using Spritely.Recipes;
 
     /// <summary>
     /// A default implementation for registering HTTP configuration information for hosting a Web API service.
@@ -58,7 +59,7 @@ namespace Spritely.Foundations.WebApi
             jsonFormatter.MediaTypeMappings.Add(
                 new RequestHeaderMapping("Accept", "text/html", StringComparison.OrdinalIgnoreCase, true, "application/json"));
 
-            jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            jsonFormatter.SerializerSettings = JsonConfiguration.CompactSerializerSettings;
 
             httpConfiguration.Routes.MapHttpRoute(
                 name: "DefaultApi",

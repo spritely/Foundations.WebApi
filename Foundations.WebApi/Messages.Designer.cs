@@ -70,11 +70,20 @@ namespace Spritely.Foundations.WebApi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Application starting..
+        ///   Looks up a localized string similar to Could not load JwtAuthenticationClientSettings from the container; please ensure that the file exists in your configuration and that UseSettingsContainerInitializer has been called or explicitly supply the value when calling UseJwtAuthenticationClientSettings..
         /// </summary>
-        internal static string Application_Starting {
+        internal static string Exception_UseJwtAuthenticationClientSettings_NoSettingsProvided {
             get {
-                return ResourceManager.GetString("Application_Starting", resourceCulture);
+                return ResourceManager.GetString("Exception_UseJwtAuthenticationClientSettings_NoSettingsProvided", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not locate assembly for {0} when attempting to load settings from configuration; to fix make sure you have a type named {0} and add typeof({0}).Assembly to the list of parameters supplied to UseSettingsContainerInitializer if the assembly is not already loaded into memory already by the main process..
+        /// </summary>
+        internal static string Exception_UseSettingsContainerInitializer_NoType {
+            get {
+                return ResourceManager.GetString("Exception_UseSettingsContainerInitializer_NoType", resourceCulture);
             }
         }
         

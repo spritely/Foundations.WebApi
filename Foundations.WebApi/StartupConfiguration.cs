@@ -20,33 +20,6 @@ namespace Spritely.Foundations.WebApi
     /// </summary>
     public class StartupConfiguration
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Instance lives for the lifetime of the application.")]
-        private static Container CreateContainer()
-        {
-            var c = new Container();
-            c.Options.DefaultScopedLifestyle = new WebApiRequestLifestyle();
-
-            return c;
-        }
-
-        private Container container = null;
-
-        /// <summary>
-        /// Gets or sets the dependency injection container.
-        /// </summary>
-        /// <value>The dependency injection container.</value>
-        public Container Container
-        {
-            get
-            {
-                return container = container ?? CreateContainer();
-            }
-            set
-            {
-                container = value;
-            }
-        }
-
         private JsonSerializerSettings defaultJsonSettings = null;
 
         /// <summary>
@@ -100,10 +73,5 @@ namespace Spritely.Foundations.WebApi
                 initializeLogPolicy = value;
             }
         }
-
-        /// <summary>
-        /// The HTTP configuration initializers.
-        /// </summary>
-        public ICollection<InitializeHttpConfiguration> HttpConfigurationInitializers { get; } = new List<InitializeHttpConfiguration>();
     }
 }
