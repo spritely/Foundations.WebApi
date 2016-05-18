@@ -11,12 +11,8 @@ namespace Spritely.Foundations.WebApi
     using Its.Log.Instrumentation;
     using Microsoft.Owin.Hosting;
     using Newtonsoft.Json;
-    using Owin;
-    using Recipes;
-    using SimpleInjector.Integration.WebApi;
     using System;
     using System.Globalization;
-    using System.Web.Http;
 
     /// <summary>
     /// An object used to Start a Web API service.
@@ -55,7 +51,7 @@ namespace Spritely.Foundations.WebApi
         /// <param name="startupConfiguration">The startup configuration.</param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter", Justification = "This is designed to mimic the underlying WebApi interface.")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "This is specifically designed to catch all exceptions.")]
-        public static void Console<TStartup>(StartupConfiguration startupConfiguration)
+        public static void Console<TStartup>(StartupConfiguration startupConfiguration = null)
         {
             try
             {

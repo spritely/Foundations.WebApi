@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="JwtAuthenticationClientSettingsTest.cs">
+// <copyright file="JwtBearerAuthenticationSettingsTest.cs">
 //     Copyright (c) 2016. All rights reserved. Licensed under the MIT license. See LICENSE file in
 //     the project root for full license information.
 // </copyright>
@@ -15,12 +15,12 @@ namespace Spritely.Foundations.WebApi.Test
     using NUnit.Framework;
 
     [TestFixture]
-    public class JwtAuthenticationClientSettingsTest
+    public class JwtBearerAuthenticationSettingsTest
     {
         [Test]
         public void Implicit_conversion_to_JwtBearerAuthenticationOptions_produces_expected_result()
         {
-            var settings = new JwtAuthenticationClientSettings
+            var settings = new JwtBearerAuthenticationSettings
             {
                 Id = "Implicit_conversion_to_JwtBearerAuthenticationOptions_produces_expected_result",
                 AllowedServers =
@@ -43,7 +43,7 @@ namespace Spritely.Foundations.WebApi.Test
         [Test]
         public void ToJwtBearerAuthenticationOptions_produces_expected_result()
         {
-            var settings = new JwtAuthenticationClientSettings
+            var settings = new JwtBearerAuthenticationSettings
             {
                 Id = "ToJwtBearerAuthenticationOptions_produces_expected_result",
                 AllowedServers =

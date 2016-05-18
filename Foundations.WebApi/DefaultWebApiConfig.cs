@@ -11,7 +11,6 @@ namespace Spritely.Foundations.WebApi
     using System.Net.Http.Formatting;
     using System.Web.Http;
     using System.Web.Http.ExceptionHandling;
-    using Newtonsoft.Json.Serialization;
     using Spritely.Recipes;
 
     /// <summary>

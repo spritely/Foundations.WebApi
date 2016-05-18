@@ -120,8 +120,8 @@
   <data name="Application_Started" xml:space="preserve">
     <value>Application started.</value>
   </data>
-  <data name="Exception_UseJwtAuthenticationClientSettings_NoSettingsProvided" xml:space="preserve">
-    <value>Could not load JwtAuthenticationClientSettings from the container; please ensure that the file exists in your configuration and that UseSettingsContainerInitializer has been called or explicitly supply the value when calling UseJwtAuthenticationClientSettings.</value>
+  <data name="Exception_UseJwtBearerAuthentication_NoSettingsProvided" xml:space="preserve">
+    <value>Could not load JwtBearerAuthenticationSettings from the container; please ensure that the file exists in your configuration and that UseSettingsContainerInitializer has been called or explicitly supply the value when calling UseJwtBearerAuthentication.</value>
   </data>
   <data name="Exception_UseSettingsContainerInitializer_NoType" xml:space="preserve">
     <value>Could not locate assembly for {0} when attempting to load settings from configuration; to fix make sure you have a type named {0} and add typeof({0}).Assembly to the list of parameters supplied to UseSettingsContainerInitializer if the assembly is not already loaded into memory already by the main process.</value>

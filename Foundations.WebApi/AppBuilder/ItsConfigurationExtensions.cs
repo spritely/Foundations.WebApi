@@ -9,12 +9,13 @@ namespace Spritely.Foundations.WebApi
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Reflection;
     using Its.Configuration;
     using Owin;
-
+    
     /// <summary>
     /// Its.Configuration extensions for IAppBuilder.
     /// </summary>
@@ -50,7 +51,7 @@ namespace Spritely.Foundations.WebApi
                     }
                     catch (InvalidOperationException ex)
                     {
-                        throw new InvalidOperationException(Messages.Exception_UseSettingsContainerInitializer_NoType, innerException: ex);
+                        throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, Messages.Exception_UseSettingsContainerInitializer_NoType, typeName), innerException: ex);
                     }
                 }
             };

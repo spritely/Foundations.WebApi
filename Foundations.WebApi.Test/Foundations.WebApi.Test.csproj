@@ -115,16 +115,18 @@
   <ItemGroup>
     <Compile Include="AppBuilder\ItsConfigurationExtensionsTest.cs" />
     <Compile Include="AppBuilder\ContainerExtensionsTest.cs" />
-    <Compile Include="Config\JwtAuthenticationClientSettingsTest.cs" />
+    <Compile Include="Config\JwtBearerAuthenticationSettingsTest.cs" />
     <Compile Include="DefaultWebApiConfigTest.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="JsonSerializerSettingsExtensionsTest.cs" />
+    <Compile Include="PathStringConverterTest.cs" />
     <Compile Include="StartupConfigurationTest.cs" />
     <Compile Include="ItsLogExceptionLoggerTest.cs" />
     <Compile Include="BasicWebApiLogPolicyTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include=".config\Local\JwtAuthenticationClientSettings.json">
+    <None Include=".config\Local\JwtBearerAuthenticationSettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="App.config" />

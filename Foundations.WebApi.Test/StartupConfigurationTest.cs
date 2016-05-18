@@ -8,10 +8,10 @@
 namespace Spritely.Foundations.WebApi.Test
 {
     using System;
+    using System.Linq;
+    using Microsoft.Owin;
     using NUnit.Framework;
     using Spritely.Recipes;
-    using SimpleInjector;
-    using SimpleInjector.Integration.WebApi;
 
     [TestFixture]
     public class StartupConfigurationTest
@@ -29,6 +29,14 @@ namespace Spritely.Foundations.WebApi.Test
         }
 
         [Test]
+        public void DefaultJsonSettings_includes_PathStringConverter()
+        {
+            var configuration = new StartupConfiguration();
+
+            Assert.That(configuration.DefaultJsonSettings.Converters.OfType<PathStringJsonConverter>().Count(), Is.EqualTo(1));
+        }
+
+        [Test]
         public void DeserializeConfigurationSettings_defaults_to_json_serialization()
         {
             var configuration = new StartupConfiguration();
@@ -39,6 +47,19 @@ namespace Spritely.Foundations.WebApi.Test
 
             Assert.That(result, Is.Not.Null);
             Assert.That(result.Name, Is.EqualTo("Hello"));
+        }
+
+        [Test]
+        public void DeserializeConfigurationSettings_default_json_serialization_includes_PathStringConverter()
+        {
+            var configuration = new StartupConfiguration();
+
+            var result = configuration.DeserializeConfigurationSettings(typeof(PathStringTestType), @"{
+    ""path"": ""/mypath""
+}") as PathStringTestType;
+
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Path, Is.EqualTo(new PathString("/mypath")));
         }
 
         [Test]
@@ -93,6 +114,11 @@ namespace Spritely.Foundations.WebApi.Test
         private class TestType
         {
             public string Name = null;
+        }
+
+        private class PathStringTestType
+        {
+            public PathString Path = PathString.Empty;
         }
     }
 }

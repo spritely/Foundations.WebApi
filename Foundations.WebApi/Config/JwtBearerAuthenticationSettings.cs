@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="JwtAuthenticationClientSettings.cs">
+// <copyright file="JwtBearerAuthenticationSettings.cs">
 //     Copyright (c) 2016. All rights reserved. Licensed under the MIT license. See LICENSE file in
 //     the project root for full license information.
 // </copyright>
@@ -7,7 +7,6 @@
 
 namespace Spritely.Foundations.WebApi
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Microsoft.Owin.Security.Jwt;
@@ -16,7 +15,7 @@ namespace Spritely.Foundations.WebApi
     /// <summary>
     /// Provides settings for a JWT authentication client.
     /// </summary>
-    public class JwtAuthenticationClientSettings
+    public class JwtBearerAuthenticationSettings
     {
         /// <summary>
         /// Gets or sets the identifier.
@@ -44,23 +43,23 @@ namespace Spritely.Foundations.WebApi
         public ICollection<JwtAuthenticationServer> AllowedServers { get; set; } = new List<JwtAuthenticationServer>();
 
         /// <summary>
-        /// Performs an implicit conversion from <see cref="JwtAuthenticationClientSettings"/> to <see cref="JwtBearerAuthenticationOptions"/>.
+        /// Performs an implicit conversion from <see cref="JwtBearerAuthenticationSettings"/> to <see cref="JwtBearerAuthenticationOptions"/>.
         /// </summary>
-        /// <param name="clientSettings">The client settings.</param>
+        /// <param name="settings">The JWT bearer authentication settings.</param>
         /// <returns>
         /// The result of the conversion.
         /// </returns>
-        public static implicit operator JwtBearerAuthenticationOptions(JwtAuthenticationClientSettings clientSettings)
+        public static implicit operator JwtBearerAuthenticationOptions(JwtBearerAuthenticationSettings settings)
         {
-            if (clientSettings == null)
+            if (settings == null)
             {
                 return null;
             }
 
             return new JwtBearerAuthenticationOptions
             {
-                AllowedAudiences = new[] { clientSettings.Id },
-                IssuerSecurityTokenProviders = clientSettings.AllowedServers.Select(s =>
+                AllowedAudiences = new[] { settings.Id },
+                IssuerSecurityTokenProviders = settings.AllowedServers.Select(s =>
                     new SymmetricKeyIssuerSecurityTokenProvider(s.Issuer, TextEncodings.Base64Url.Decode(s.Secret)))
             };
         }

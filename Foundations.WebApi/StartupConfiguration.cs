@@ -7,11 +7,8 @@
 
 namespace Spritely.Foundations.WebApi
 {
-    using System.Collections.Generic;
     using Its.Configuration;
     using Newtonsoft.Json;
-    using SimpleInjector;
-    using SimpleInjector.Integration.WebApi;
     using Spritely.Recipes;
 
     /// <summary>
@@ -30,7 +27,7 @@ namespace Spritely.Foundations.WebApi
         {
             get
             {
-                return (defaultJsonSettings = defaultJsonSettings ?? JsonConfiguration.CompactSerializerSettings);
+                return defaultJsonSettings = defaultJsonSettings ?? JsonConfiguration.CompactSerializerSettings.WithPathStringConverter();
             }
             set
             {
@@ -48,7 +45,7 @@ namespace Spritely.Foundations.WebApi
         {
             get
             {
-                return (deserializeConfigurationSettings = deserializeConfigurationSettings ?? ((type, serialized) => JsonConvert.DeserializeObject(serialized, type, JsonConfiguration.CompactSerializerSettings)));
+                return deserializeConfigurationSettings = deserializeConfigurationSettings ?? ((type, serialized) => JsonConvert.DeserializeObject(serialized, type, DefaultJsonSettings));
             }
             set
             {

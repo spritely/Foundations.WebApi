@@ -70,11 +70,11 @@ namespace Spritely.Foundations.WebApi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not load JwtAuthenticationClientSettings from the container; please ensure that the file exists in your configuration and that UseSettingsContainerInitializer has been called or explicitly supply the value when calling UseJwtAuthenticationClientSettings..
+        ///   Looks up a localized string similar to Could not load JwtBearerAuthenticationSettings from the container; please ensure that the file exists in your configuration and that UseSettingsContainerInitializer has been called or explicitly supply the value when calling UseJwtBearerAuthentication..
         /// </summary>
-        internal static string Exception_UseJwtAuthenticationClientSettings_NoSettingsProvided {
+        internal static string Exception_UseJwtBearerAuthentication_NoSettingsProvided {
             get {
-                return ResourceManager.GetString("Exception_UseJwtAuthenticationClientSettings_NoSettingsProvided", resourceCulture);
+                return ResourceManager.GetString("Exception_UseJwtBearerAuthentication_NoSettingsProvided", resourceCulture);
             }
         }
         
