@@ -32,7 +32,7 @@ namespace Spritely.Foundations.WebApi
 
             var s = settings ?? app.GetInstance<JwtBearerAuthenticationSettings>();
 
-            if (settings == null)
+            if (s == null)
             {
                 throw new InvalidOperationException(Messages.Exception_UseJwtBearerAuthentication_NoSettingsProvided);
             }

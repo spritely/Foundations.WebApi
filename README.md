@@ -10,33 +10,40 @@ namespace MyNamespace
     using Owin;
     using Spritely.Foundations.WebApi;
 
-    // Startup is the conventional/recommended class name for Owin applications
+    // Startup is the conventional/recommended class name for OWIN applications
     public class Startup
     {
-        // Common logic
-        public static StartupConfiguration GetConfiguration()
+        private static void InitializeContainer(Container container)
         {
-            var configuration = new StartupConfiguration
-            {
-                HttpConfigurationInitializers =
-                {
-                    DefaultWebApiConfig.InitializeHttpConfiguration
-                }
-            };
-
-            return configuration;
+            // Do any setup of your container here
+            // container.Register<IMyType, MyType>();
         }
 
-        // This is for an IIS hosted application
-        public void Configuration(IAppBuilder appBuilder)
+        public void Configuration(IAppBuilder app)
         {
-            Start.Configuration(GetConfiguration(), appBuilder);
+            Start.Initialize();
+            
+            // Lets the application know how to register any custom types you have
+            app.UseContainerInitializer(InitializeContainer) // optional
+                // Sets up the application to pull values from Its.Configuration files
+                .UseSettingsContainerInitializer()
+                // If you have the configuration class present in your .config folder and the corresponding class cannot be found,
+                // you can force assemblies to be loaded (and thus resolvable) by adding parameters as follows:
+                //.UseSettingsContainerInitializer(typeof(MyDatabaseSettings).Assembly, typeof(MyAuthSettings).Assembly)
+                
+                // This will wire up JwtBearerAuthentication from your Its.Configuration files (see example below)
+                .UseJwtBearerAuthentication()
+                
+                // Wire WebApi into OWIN pipeline and pass in any callback functions for setting up the InitializeHttpConfiguration
+                // DefaultWebApiConfig.InitializeHttpConfiguration provides standard controller route mapping and sets Its.Log
+                // messages to write to the .NET trace logger 
+                .UseWebApiWithHttpConfigurationInitializers(DefaultWebApiConfig.InitializeHttpConfiguration);
         }
 
         // This is only necessary for a console application
         public static void Main(string[] args)
         {
-            Start.Console<Startup>(GetConfiguration());
+            Start.Console<Startup>();
         }
     }
 }
@@ -114,6 +121,20 @@ Finally, create a .config folder in your application with a subfolder such as Lo
     "url": "https://localhost:443"
 }
 ```
+
+If you are using JWT bearer authentication then you will also need a file called JwtBearerAuthenticationSettings.json with contents similar to the following:
+
+```json
+{
+    "id": "AUniqueIdentifierYourOAuthServerUsesToIdentifyThisClient",
+    "name": "Can be any name and is here as documentation",
+    "allowedServers": [
+        {
+            "issuer": "http://your.jwt.oauth.server.com",
+            "secret": "SomeBase64UrlEncodedSecretTheServerUsesToSignTokens"
+        }
+    ]
+}
 
 If your application is a console application you should be able to simply build and run it now, or launch it in the Visual Studio debugger. If your application is hosted on IIS, you should be able to point IIS at your development directory with appropriate permissions and build it, point your browser at it, and attach a debugger to it.
 
