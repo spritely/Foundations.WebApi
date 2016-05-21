@@ -18,5 +18,13 @@ namespace Spritely.Foundations.WebApi
         /// <value>The URL.</value>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "This is the type required by WebApi.")]
         public string Url { get; set; }
+
+        /// <summary>
+        /// Gets or sets the CORS settings instance.
+        /// </summary>
+        /// <value>
+        /// The CORS settings instance.
+        /// </value>
+        public Cors Cors { get; set; }
     }
 }

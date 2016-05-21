@@ -17,11 +17,13 @@
         <group>
             <dependency id="Its.Configuration" version="1.0.6" />
             <dependency id="Its.Log" version="2.9.13" />
+            <dependency id="Microsoft.AspNet.WebApi.Cors" version="5.2.3" />
             <dependency id="Microsoft.AspNet.WebApi.OwinSelfHost" version="5.2.3" />
-            <dependency id="Microsoft.Owin.Hosting" version="3.0.1" />
+            <dependency id="Microsoft.Owin.Cors" version="3.0.1" />
             <dependency id="Microsoft.Owin.Host.HttpListener" version="3.0.1" />
             <dependency id="Microsoft.Owin.Host.SystemWeb" version="3.0.1" />
             <dependency id="Microsoft.Owin.Security.Jwt" version="3.0.1" />
+            <dependency id="Microsoft.Owin.Hosting" version="3.0.1" />
             <dependency id="Newtonsoft.Json" version="8.0.3" />
             <dependency id="SimpleInjector.Integration.WebApi" version="3.1.4" />
             <dependency id="System.IdentityModel.Tokens.Jwt" version="4.0.2" />

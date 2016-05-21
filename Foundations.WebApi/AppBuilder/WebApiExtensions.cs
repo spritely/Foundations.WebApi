@@ -31,17 +31,20 @@ namespace Spritely.Foundations.WebApi
                 throw new ArgumentNullException(nameof(app));
             }
 
+            var resolver = new AppBuilderServiceResolver(app);
+            var container = app.GetContainer();
+            var httpConfiguration = new HttpConfiguration
+            {
+                DependencyResolver = new SimpleInjectorWebApiDependencyResolver(container)
+            };
+
             var initializers = httpConfigurationInitializers ?? new InitializeHttpConfiguration[] { };
-            var httpConfiguration = new HttpConfiguration();
             foreach (var initialize in initializers)
             {
-                initialize(httpConfiguration);
+                initialize(httpConfiguration, resolver);
             }
 
             app.UseWebApi(httpConfiguration);
-
-            var container = app.GetContainer();
-            httpConfiguration.DependencyResolver = new SimpleInjectorWebApiDependencyResolver(container);
 
             return app;
         }

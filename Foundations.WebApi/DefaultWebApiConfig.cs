@@ -8,8 +8,11 @@
 namespace Spritely.Foundations.WebApi
 {
     using System;
+    using System.Linq;
     using System.Net.Http.Formatting;
     using System.Web.Http;
+    using System.Web.Http.Cors;
+    using System.Web.Http.Dispatcher;
     using System.Web.Http.ExceptionHandling;
     using Spritely.Recipes;
 
@@ -22,7 +25,7 @@ namespace Spritely.Foundations.WebApi
         /// A default implementation to initialize the HTTP configuration with a new
         /// DefaultWebApiConfig project with an ItsLogExceptionHandler.
         /// </summary>
-        public static InitializeHttpConfiguration InitializeHttpConfiguration { get; } = config => new DefaultWebApiConfig().Register(config);
+        public static InitializeHttpConfiguration InitializeHttpConfiguration { get; } = (config, resolver) => new DefaultWebApiConfig().Register(config, resolver);
 
         /// <summary>
         /// An implementation to initialize the HTTP configuration with a custom ExceptionLogger.
@@ -34,7 +37,7 @@ namespace Spritely.Foundations.WebApi
                    ExceptionLogger = exceptionLogger
                };
 
-               return config => webApiConfig.Register(config);
+               return (config, resolver) => webApiConfig.Register(config, resolver);
            };
 
         /// <summary>
@@ -47,11 +50,18 @@ namespace Spritely.Foundations.WebApi
         /// Registers some default values with the specified HTTP configuration.
         /// </summary>
         /// <param name="httpConfiguration">The HTTP configuration.</param>
-        public void Register(HttpConfiguration httpConfiguration)
+        /// <param name="resolver">The resolver.</param>
+        /// <exception cref="ArgumentNullException">If any arguments are null.</exception>
+        public void Register(HttpConfiguration httpConfiguration, IServiceResolver resolver)
         {
             if (httpConfiguration == null)
             {
                 throw new ArgumentNullException(nameof(httpConfiguration));
+            }
+
+            if (resolver == null)
+            {
+                throw new ArgumentNullException(nameof(resolver));
             }
 
             var jsonFormatter = httpConfiguration.Formatters.JsonFormatter;
@@ -63,11 +73,35 @@ namespace Spritely.Foundations.WebApi
             httpConfiguration.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional, action = "Get" });
+                defaults: new { id = RouteParameter.Optional });
+
+            httpConfiguration.Services.Replace(typeof(IHttpControllerSelector), new ApiControllerSelector(httpConfiguration));
 
             if (ExceptionLogger != null)
             {
                 httpConfiguration.Services.Add(typeof(IExceptionLogger), ExceptionLogger);
+            }
+
+            var hostingSettings = resolver.GetInstance<HostingSettings>();
+            if (hostingSettings?.Cors != null && hostingSettings.Cors.Origins.Any())
+            {
+                var cors = hostingSettings.Cors;
+
+                var corsPolicyProvider = new EnableCorsAttribute(
+                            string.Join(",", cors.Origins),
+                            string.Join(",", cors.Headers),
+                            string.Join(",", cors.Methods),
+                            string.Join(",", cors.ExposedHeaders))
+                {
+                    SupportsCredentials = cors.SupportsCredentials
+                };
+
+                if (cors.PreflightMaxAge.HasValue)
+                {
+                    corsPolicyProvider.PreflightMaxAge = cors.PreflightMaxAge.Value;
+                }
+
+                httpConfiguration.EnableCors(corsPolicyProvider);
             }
         }
     }

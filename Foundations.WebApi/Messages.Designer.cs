@@ -70,6 +70,15 @@ namespace Spritely.Foundations.WebApi {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Calling UseCors requires your hosting settings to be configured with the cors property and that at minimum its origins property contain at least one origin value..
+        /// </summary>
+        internal static string Exception_UseCors_NoSettingsProvided {
+            get {
+                return ResourceManager.GetString("Exception_UseCors_NoSettingsProvided", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Could not load JwtBearerAuthenticationSettings from the container; please ensure that the file exists in your configuration and that UseSettingsContainerInitializer has been called or explicitly supply the value when calling UseJwtBearerAuthentication..
         /// </summary>
         internal static string Exception_UseJwtBearerAuthentication_NoSettingsProvided {

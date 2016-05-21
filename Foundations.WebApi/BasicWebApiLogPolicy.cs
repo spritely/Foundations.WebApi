@@ -7,11 +7,13 @@
 
 namespace Spritely.Foundations.WebApi
 {
-    using Its.Log.Instrumentation;
     using System;
     using System.Diagnostics;
     using System.Globalization;
+    using System.Linq;
     using System.Web.Http.ExceptionHandling;
+    using Its.Log.Instrumentation;
+    using Microsoft.Owin;
 
     /// <summary>
     /// Container for static log policy initialization logic.
@@ -24,6 +26,18 @@ namespace Spritely.Foundations.WebApi
         /// </summary>
         public static void Initialize()
         {
+            Formatter<OwinRequest>.RegisterForMembers(
+                o => o.Method,
+                o => o.Uri,
+                o => o.Headers);
+
+            Formatter<OwinResponse>.RegisterForMembers(
+                o => o.StatusCode,
+                o => o.ReasonPhrase,
+                o => o.Headers);
+
+            Formatter<HeaderDictionary>.Register(d => string.Join("; ", d.Keys.Select(k => k + ": " + string.Join(", ", d.GetValues(k)))));
+
             Formatter<ExceptionLoggerContext>.RegisterForAllMembers();
 
             Log.EntryPosted += (sender, args) =>

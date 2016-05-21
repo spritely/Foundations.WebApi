@@ -25,5 +25,6 @@ namespace Spritely.Foundations.WebApi
     /// Delegate representing an HTTP configuration initialization function.
     /// </summary>
     /// <param name="httpConfiguration">The HTTP configuration.</param>
-    public delegate void InitializeHttpConfiguration(HttpConfiguration httpConfiguration);
+    /// <param name="serviceResolver">The service resolver.</param>
+    public delegate void InitializeHttpConfiguration(HttpConfiguration httpConfiguration, IServiceResolver serviceResolver);
 }
