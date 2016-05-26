@@ -32,8 +32,8 @@ namespace Spritely.Foundations.WebApi.Test
             var settings = app.GetInstance<JwtBearerAuthenticationSettings>();
 
             Assert.That(settings, Is.Not.Null);
-            Assert.That(settings.Id, Is.EqualTo("3b076958-f5f0-4844-9c7e-806408b41e6f"));
-            Assert.That(settings.Name, Is.EqualTo("Test client"));
+            Assert.That(settings.AllowedClients.Count, Is.EqualTo(1));
+            Assert.That(settings.AllowedClients.First(), Is.EqualTo("test.client"));
             Assert.That(settings.AllowedServers.Count, Is.EqualTo(1));
             Assert.That(settings.AllowedServers.First().Issuer, Is.EqualTo("localhost"));
             Assert.That(settings.AllowedServers.First().Secret, Is.EqualTo("pu6txARocfowC1b3eNZEYuNcnTBGwEGfupX9kShMc8U"));

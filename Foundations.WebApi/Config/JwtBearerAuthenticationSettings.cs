@@ -18,20 +18,12 @@ namespace Spritely.Foundations.WebApi
     public class JwtBearerAuthenticationSettings
     {
         /// <summary>
-        /// Gets or sets the identifier.
+        /// Gets or sets the allowed clients.
         /// </summary>
         /// <value>
-        /// The identifier.
+        /// The allowed clients.
         /// </value>
-        public string Id { get; set; }
-
-        /// <summary>
-        /// Gets or sets the name.
-        /// </summary>
-        /// <value>
-        /// The name.
-        /// </value>
-        public string Name { get; set; }
+        public ICollection<string> AllowedClients { get; set; } = new List<string>();
 
         /// <summary>
         /// Gets the allowed servers.
@@ -58,7 +50,7 @@ namespace Spritely.Foundations.WebApi
 
             return new JwtBearerAuthenticationOptions
             {
-                AllowedAudiences = new[] { settings.Id },
+                AllowedAudiences = settings.AllowedClients,
                 IssuerSecurityTokenProviders = settings.AllowedServers.Select(s =>
                     new SymmetricKeyIssuerSecurityTokenProvider(s.Issuer, TextEncodings.Base64Url.Decode(s.Secret)))
             };

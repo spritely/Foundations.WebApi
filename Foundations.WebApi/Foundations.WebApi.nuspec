@@ -25,8 +25,8 @@
             <dependency id="Microsoft.Owin.Security.Jwt" version="3.0.1" />
             <dependency id="Microsoft.Owin.Hosting" version="3.0.1" />
             <dependency id="Newtonsoft.Json" version="8.0.3" />
-            <dependency id="SimpleInjector.Integration.WebApi" version="3.1.4" />
-            <dependency id="System.IdentityModel.Tokens.Jwt" version="4.0.2" />
+            <dependency id="SimpleInjector.Integration.WebApi" version="3.1.5" />
+            <dependency id="System.IdentityModel.Tokens.Jwt" version="4.0.2.206221351" />
         </group>
     </dependencies>
   </metadata>

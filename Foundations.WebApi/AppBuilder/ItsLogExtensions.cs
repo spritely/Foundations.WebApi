@@ -16,6 +16,12 @@ namespace Spritely.Foundations.WebApi
     /// </summary>
     public static class ItsLogExtensions
     {
+        /// <summary>
+        /// Uses the request and response logging.
+        /// </summary>
+        /// <param name="app">The application.</param>
+        /// <returns>The modified application.</returns>
+        /// <exception cref="ArgumentNullException">If app is null.</exception>
         public static IAppBuilder UseRequestAndResponseLogging(this IAppBuilder app)
         {
             if (app == null)

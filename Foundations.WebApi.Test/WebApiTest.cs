@@ -31,7 +31,7 @@ namespace Spritely.Foundations.WebApi.Test
 
         private readonly JwtBearerAuthenticationSettings jwtBearerAuthenticationSettings = new JwtBearerAuthenticationSettings
         {
-            Id = "my-identifier",
+            AllowedClients = { "my-identifier" },
             AllowedServers =
             {
                 new JwtAuthenticationServer
@@ -291,7 +291,7 @@ namespace Spritely.Foundations.WebApi.Test
                 var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost/authorization-required");
                 var accessToken = CreateJwtAccessTokenFor(
                     jwtBearerAuthenticationSettings.AllowedServers.First().Issuer,
-                    jwtBearerAuthenticationSettings.Id,
+                    jwtBearerAuthenticationSettings.AllowedClients.First(),
                     claims: new [] { new Claim("user", "test") },
                     secret: jwtBearerAuthenticationSettings.AllowedServers.First().Secret);
                 request.Headers.Add("Authorization", "bearer " + accessToken);
@@ -317,7 +317,7 @@ namespace Spritely.Foundations.WebApi.Test
                 var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost/authorization-required");
                 var accessToken = CreateJwtAccessTokenFor(
                     jwtBearerAuthenticationSettings.AllowedServers.First().Issuer,
-                    jwtBearerAuthenticationSettings.Id,
+                    jwtBearerAuthenticationSettings.AllowedClients.First(),
                     secret: "HayCkqRlBqeILBmvywxwzWsANzQ5YQQaJdjnDPR5CW0");
 
                 request.Headers.Add("Authorization", "bearer " + accessToken);
@@ -341,7 +341,7 @@ namespace Spritely.Foundations.WebApi.Test
                 var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost/authorization-required");
                 var accessToken = CreateJwtAccessTokenFor(
                     "http://invalid-issuer.localhost",
-                    jwtBearerAuthenticationSettings.Id,
+                    jwtBearerAuthenticationSettings.AllowedClients.First(),
                     secret: jwtBearerAuthenticationSettings.AllowedServers.First().Secret);
 
                 request.Headers.Add("Authorization", "bearer " + accessToken);
@@ -389,7 +389,7 @@ namespace Spritely.Foundations.WebApi.Test
                 var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost/authorization-required");
                 var accessToken = CreateJwtAccessTokenFor(
                     jwtBearerAuthenticationSettings.AllowedServers.First().Issuer,
-                    jwtBearerAuthenticationSettings.Id,
+                    jwtBearerAuthenticationSettings.AllowedClients.First(),
                     expires: DateTime.UtcNow.AddSeconds(1),
                     secret: jwtBearerAuthenticationSettings.AllowedServers.First().Secret);
 

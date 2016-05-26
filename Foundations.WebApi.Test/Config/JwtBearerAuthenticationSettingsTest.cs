@@ -22,7 +22,11 @@ namespace Spritely.Foundations.WebApi.Test
         {
             var settings = new JwtBearerAuthenticationSettings
             {
-                Id = "Implicit_conversion_to_JwtBearerAuthenticationOptions_produces_expected_result",
+                AllowedClients =
+                {
+                    "Implicit_conversion_to_JwtBearerAuthenticationOptions_produces_expected_result_1",
+                    "Implicit_conversion_to_JwtBearerAuthenticationOptions_produces_expected_result_2"
+                },
                 AllowedServers =
                 {
                     new JwtAuthenticationServer { Issuer = "test1", Secret = CreateSecret() },
@@ -33,8 +37,9 @@ namespace Spritely.Foundations.WebApi.Test
             Func<JwtBearerAuthenticationOptions, JwtBearerAuthenticationOptions> implicitConversion = o => o;
             var options = implicitConversion(settings);
 
-            Assert.That(options.AllowedAudiences.Count(), Is.EqualTo(1));
-            Assert.That(options.AllowedAudiences.First(), Is.EqualTo(settings.Id));
+            Assert.That(options.AllowedAudiences.Count(), Is.EqualTo(settings.AllowedClients.Count));
+            Assert.That(options.AllowedAudiences.First(), Is.EqualTo(settings.AllowedClients.First()));
+            Assert.That(options.AllowedAudiences.Skip(1).First(), Is.EqualTo(settings.AllowedClients.Skip(1).First()));
             Assert.That(options.IssuerSecurityTokenProviders.Count(), Is.EqualTo(2));
             Assert.That(options.IssuerSecurityTokenProviders.First().Issuer, Is.EqualTo(settings.AllowedServers.First().Issuer));
             Assert.That(options.IssuerSecurityTokenProviders.Skip(1).First().Issuer, Is.EqualTo(settings.AllowedServers.Skip(1).First().Issuer));
@@ -45,7 +50,10 @@ namespace Spritely.Foundations.WebApi.Test
         {
             var settings = new JwtBearerAuthenticationSettings
             {
-                Id = "ToJwtBearerAuthenticationOptions_produces_expected_result",
+                AllowedClients = {
+                    "ToJwtBearerAuthenticationOptions_produces_expected_result_1",
+                    "ToJwtBearerAuthenticationOptions_produces_expected_result_2"
+                },
                 AllowedServers =
                 {
                     new JwtAuthenticationServer { Issuer = "1test", Secret = CreateSecret() },
@@ -55,8 +63,9 @@ namespace Spritely.Foundations.WebApi.Test
 
             var options = settings.ToJwtBearerAuthenticationOptions();
 
-            Assert.That(options.AllowedAudiences.Count(), Is.EqualTo(1));
-            Assert.That(options.AllowedAudiences.First(), Is.EqualTo(settings.Id));
+            Assert.That(options.AllowedAudiences.Count(), Is.EqualTo(settings.AllowedClients.Count));
+            Assert.That(options.AllowedAudiences.First(), Is.EqualTo(settings.AllowedClients.First()));
+            Assert.That(options.AllowedAudiences.Skip(1).First(), Is.EqualTo(settings.AllowedClients.Skip(1).First()));
             Assert.That(options.IssuerSecurityTokenProviders.Count(), Is.EqualTo(2));
             Assert.That(options.IssuerSecurityTokenProviders.First().Issuer, Is.EqualTo(settings.AllowedServers.First().Issuer));
             Assert.That(options.IssuerSecurityTokenProviders.Skip(1).First().Issuer, Is.EqualTo(settings.AllowedServers.Skip(1).First().Issuer));
