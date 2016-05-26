@@ -23,6 +23,7 @@ namespace Spritely.Foundations.WebApi
         /// <value>
         /// The allowed clients.
         /// </value>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "This is designed for serialization and deserialization to and from JSON which needs to be able to set this property.")]
         public ICollection<string> AllowedClients { get; set; } = new List<string>();
 
         /// <summary>
