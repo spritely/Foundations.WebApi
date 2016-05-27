@@ -31,7 +31,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="Spritely.Foundations.WebApi.dll" target="lib\net45" />
-    <file src="Spritely.Foundations.WebApi.pdb" target="lib\net45" />
+    <file src="Spritely.Foundations.WebApi.dll" target="lib\net461" />
+    <file src="Spritely.Foundations.WebApi.pdb" target="lib\net461" />
   </files>
 </package>
