@@ -14,6 +14,7 @@ namespace Spritely.Foundations.WebApi.Test
     using Newtonsoft.Json.Serialization;
     using NSubstitute;
     using NUnit.Framework;
+    using Spritely.Recipes;
 
     [TestFixture]
     public class DefaultWebApiConfigTest
@@ -99,7 +100,7 @@ namespace Spritely.Foundations.WebApi.Test
 
                 var jsonFormatter = httpConfiguration.Formatters.JsonFormatter;
                 
-                Assert.That(jsonFormatter.SerializerSettings.ContractResolver, Is.TypeOf<CamelCasePropertyNamesContractResolver>());
+                Assert.That(jsonFormatter.SerializerSettings.ContractResolver, Is.TypeOf<CamelCaseNamesStrictConstructorContractResolver>());
             }
         }
     }

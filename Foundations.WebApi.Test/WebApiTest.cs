@@ -54,7 +54,7 @@ namespace Spritely.Foundations.WebApi.Test
                 var result = await response.Content.ReadAsStringAsync();
 
                 Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-                Assert.That(result, Is.EqualTo(@"{""object"":{""name"":""Mr. Me""}}"));
+                Assert.That(result, Is.EqualTo(@"{""null"":null,""object"":{""name"":""Mr. Me""}}"));
             }
         }
 
