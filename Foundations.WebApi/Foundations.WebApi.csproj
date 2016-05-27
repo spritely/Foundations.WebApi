@@ -121,6 +121,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include=".Spritely.Recipes\CamelCaseNamesStrictConstructorContractResolver\CamelCaseNamesStrictConstructorContractResolver.cs" />
     <Compile Include=".Spritely.Recipes\Functional\Functional.cs" />
     <Compile Include=".Spritely.Recipes\InheritedTypeJsonConverter\InheritedTypeJsonConverter.cs" />
     <Compile Include=".Spritely.Recipes\JsonConfiguration\JsonConfiguration.cs" />
