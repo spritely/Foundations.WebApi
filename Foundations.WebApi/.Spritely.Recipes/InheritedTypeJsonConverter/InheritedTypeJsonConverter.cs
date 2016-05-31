@@ -61,8 +61,12 @@ namespace Spritely.Recipes
         ///     this filter are called 'candidates'.
         ///   - If there are no candidates, then throw.
         ///   - For all candidates, ask the serializer to deserialize the JSON as the candidate type.  Catch and 
-        ///     ignore exceptions when attempting to deserialize.
-        ///   - If more than one candidate successfully deserializes, then throw.
+        ///     ignore exceptions when attempting to deserialize.  If only one candidate successfully deserializes
+        ///     then return the deserialized object.
+        ///   - If more than one candidate successfully deserializes, then filter to candidates whose public 
+        ///     properites and fields are all 1st level JSON properties, using case-insensitive matching. We call
+        ///     this "strict matching."  If only one candidate has a strict match, return the corresponding
+        ///     deserialized object.  Otherwise, throw.
         /// - Using the serializer to deserialize enables the method to support types with constructors,
         ///   which JSON.net does well out-of-the-box and which would be cumbersome to emulate.
         /// - This method does not consider > 1st level JSON properties to determine candidates.  In other words,
@@ -111,55 +115,29 @@ namespace Spritely.Recipes
             }
 
             var jsonObject = JObject.Load(reader);
+            var jsonProperties = new HashSet<string>(GetProperties(jsonObject), StringComparer.OrdinalIgnoreCase);
+
             var childTypes = GetChildTypes(objectType);
+            var candidateChildTypes = GetCandidateChildTypes(childTypes, jsonProperties);
+            var deserializedChildren = DeserializeCandidates(candidateChildTypes, serializer, jsonObject).ToList();
 
-            var jsonProperties = GetProperties(jsonObject);
-            var candidateChildTypes = new List<Type>();
-            foreach (var childType in childTypes)
-            {
-                var childTypeProperties = childType.GetProperties().Select(t => t.Name).ToList();
-                var childTypeFields = childType.GetFields().Select(t => t.Name).ToList();
-                var childTypePropertiesAndFields = new HashSet<string>(
-                    childTypeProperties.Concat(childTypeFields),
-                    StringComparer.OrdinalIgnoreCase);
-                if (jsonProperties.All(p => childTypePropertiesAndFields.Contains(p)))
-                {
-                    candidateChildTypes.Add(childType);
-                }
-            }
-
-            var deserializedObjects = new List<object>();
-            foreach (var candidateChildType in candidateChildTypes)
-            {
-                try
-                {
-                    var deserializedObject = serializer.Deserialize(jsonObject.CreateReader(), candidateChildType);
-                    if (deserializedObject != null)
-                    {
-                        deserializedObjects.Add(deserializedObject);
-                    }
-                }
-                catch (JsonException)
-                {
-                }
-            }
-
-            if (deserializedObjects.Count == 0)
+            if (deserializedChildren.Count == 0)
             {
                 throw new JsonSerializationException(
                     string.Format(CultureInfo.InvariantCulture, "Unable to deserialize to type {0}, value: {1}", objectType, jsonObject));
             }
 
-            if (deserializedObjects.Count > 1)
+            CandidateChildType matchedChild = null;
+            if (deserializedChildren.Count == 1)
             {
-                var matchingTypes =
-                    deserializedObjects.Select(_ => _.GetType().FullName)
-                        .Aggregate((running, current) => running + " | " + current);
-                throw new JsonSerializationException(
-                    string.Format(CultureInfo.InvariantCulture, "The json string can be deserialized into multiple types: {0}, value: {1}", matchingTypes, jsonObject));
+                matchedChild = deserializedChildren.Single();
+            }
+            else if (deserializedChildren.Count > 1)
+            {
+                matchedChild = SelectBestChildUsingStrictPropertyMatching(deserializedChildren, jsonObject, jsonProperties);
             }
 
-            return deserializedObjects.Single();
+            return matchedChild.DeserializedObject;
         }
 
         /// <inheritdoc />
@@ -167,6 +145,15 @@ namespace Spritely.Recipes
         {
             var jsonObject = JObject.FromObject(value, serializer);
             jsonObject.WriteTo(writer);
+        }
+
+        private class CandidateChildType
+        {
+            public Type Type { get; set; }
+
+            public HashSet<string> PropertiesAndFields { get; set; }
+
+            public object DeserializedObject { get; set; }
         }
 
         private static IReadOnlyCollection<string> GetProperties(JToken node)
@@ -179,6 +166,77 @@ namespace Spritely.Recipes
             }
 
             return result;
+        }
+
+        private static IEnumerable<CandidateChildType> GetCandidateChildTypes(IEnumerable<Type> childTypes, HashSet<string> jsonProperties)
+        {
+            var candidateChildTypes = new List<CandidateChildType>();
+            foreach (var childType in childTypes)
+            {
+                var childTypeProperties = childType.GetProperties().Select(t => t.Name).ToList();
+                var childTypeFields = childType.GetFields().Select(t => t.Name).ToList();
+                var childTypePropertiesAndFields = new HashSet<string>(
+                    childTypeProperties.Concat(childTypeFields),
+                    StringComparer.OrdinalIgnoreCase);
+                if (jsonProperties.All(p => childTypePropertiesAndFields.Contains(p)))
+                {
+                    var candidateChildType = new CandidateChildType
+                    {
+                        Type = childType,
+                        PropertiesAndFields = childTypePropertiesAndFields
+                    };
+                    candidateChildTypes.Add(candidateChildType);
+                }
+            }
+
+            return candidateChildTypes;
+        }
+
+        private static IEnumerable<CandidateChildType> DeserializeCandidates(IEnumerable<CandidateChildType> candidateChildTypes, JsonSerializer serializer, JObject jsonObject)
+        {
+            foreach (var candidateChildType in candidateChildTypes)
+            {
+                object deserializedObject = null;
+
+                try
+                {
+                    deserializedObject = serializer.Deserialize(jsonObject.CreateReader(), candidateChildType.Type);                    
+                }
+                catch (JsonException)
+                {
+                }
+
+                if (deserializedObject != null)
+                {
+                    yield return
+                        new CandidateChildType
+                        {
+                            Type = candidateChildType.Type,
+                            PropertiesAndFields = candidateChildType.PropertiesAndFields,
+                            DeserializedObject = deserializedObject                            
+                        };
+                }
+            }
+        }
+
+        private static CandidateChildType SelectBestChildUsingStrictPropertyMatching(IEnumerable<CandidateChildType> candidateChildTypes, JObject jsonObject, HashSet<string> jsonProperties)
+        {
+            candidateChildTypes = candidateChildTypes.ToList();
+            var strictCandidates =
+                    candidateChildTypes.Where(cct => cct.PropertiesAndFields.All(pf => jsonProperties.Contains(pf)))
+                        .ToList();
+
+            if (strictCandidates.Count != 1)
+            {
+                var typesToReportInException = strictCandidates.Count == 0 ? candidateChildTypes : strictCandidates;
+                var matchingTypes =
+                    typesToReportInException.Select(_ => _.Type.FullName)
+                        .Aggregate((running, current) => running + " | " + current);
+                throw new JsonSerializationException(
+                    string.Format(CultureInfo.InvariantCulture, "The json string can be deserialized into multiple types: {0}, value: {1}", matchingTypes, jsonObject));
+            }
+
+            return strictCandidates.Single();
         }
 
         private IEnumerable<Type> GetChildTypes(Type type)

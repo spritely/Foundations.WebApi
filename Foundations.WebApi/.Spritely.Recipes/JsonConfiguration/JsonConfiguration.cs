@@ -38,7 +38,7 @@ namespace Spritely.Recipes
                 {
                     Formatting = Formatting.Indented,
                     NullValueHandling = NullValueHandling.Include,
-                    ContractResolver = CamelCaseNamesStrictConstructorContractResolver.Instance,
+                    ContractResolver = CamelStrictConstructorContractResolver.Instance,
                     Converters = new List<JsonConverter>
                     {
                         new StringEnumConverter { CamelCaseText = true },
@@ -63,7 +63,7 @@ namespace Spritely.Recipes
                 {
                     Formatting = Formatting.None,
                     NullValueHandling = NullValueHandling.Include,
-                    ContractResolver = CamelCaseNamesStrictConstructorContractResolver.Instance,
+                    ContractResolver = CamelStrictConstructorContractResolver.Instance,
                     Converters = new List<JsonConverter>
                     {
                         new StringEnumConverter { CamelCaseText = true },

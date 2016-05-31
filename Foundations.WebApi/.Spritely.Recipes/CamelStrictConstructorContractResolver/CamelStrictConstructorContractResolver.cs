@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ConstructorParametersRequiredContractResolver.cs">
+// <copyright file="CamelStrictConstructorContractResolver.cs">
 //     Copyright (c) 2016. All rights reserved. Licensed under the MIT license. See LICENSE file in
 //     the project root for full license information.
 // </copyright>
@@ -30,11 +30,11 @@ namespace Spritely.Recipes
     [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     [System.CodeDom.Compiler.GeneratedCode("Spritely.Recipes", "See package version number")]
 #endif
-    public class CamelCaseNamesStrictConstructorContractResolver
+    public class CamelStrictConstructorContractResolver
         : CamelCasePropertyNamesContractResolver
     {
-        private static readonly CamelCaseNamesStrictConstructorContractResolver ContractResolverInstance
-            = new CamelCaseNamesStrictConstructorContractResolver();
+        private static readonly CamelStrictConstructorContractResolver ContractResolverInstance
+            = new CamelStrictConstructorContractResolver();
 
         /// <summary>
         /// As of 7.0.1, Json.NET suggests using a static instance for "stateless" contract resolvers, for performance reasons.
@@ -43,7 +43,7 @@ namespace Spritely.Recipes
         /// "Use the parameterless constructor and cache instances of the contract resolver within your application for optimal performance."
         /// Also, <a href="https://stackoverflow.com/questions/33557737/does-json-net-cache-types-serialization-information"/>
         /// </summary>
-        public static CamelCaseNamesStrictConstructorContractResolver Instance
+        public static CamelStrictConstructorContractResolver Instance
         {
             get
             {

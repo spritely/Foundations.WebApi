@@ -100,7 +100,7 @@ namespace Spritely.Foundations.WebApi.Test
 
                 var jsonFormatter = httpConfiguration.Formatters.JsonFormatter;
                 
-                Assert.That(jsonFormatter.SerializerSettings.ContractResolver, Is.TypeOf<CamelCaseNamesStrictConstructorContractResolver>());
+                Assert.That(jsonFormatter.SerializerSettings.ContractResolver, Is.TypeOf<CamelStrictConstructorContractResolver>());
             }
         }
     }

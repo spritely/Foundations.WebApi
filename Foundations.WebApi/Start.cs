@@ -13,6 +13,7 @@ namespace Spritely.Foundations.WebApi
     using Newtonsoft.Json;
     using System;
     using System.Globalization;
+    using Microsoft.Owin.Hosting.Tracing;
 
     /// <summary>
     /// An object used to Start a Web API service.
@@ -58,8 +59,16 @@ namespace Spritely.Foundations.WebApi
                 var configuration = startupConfiguration ?? new StartupConfiguration();
                 Settings.Deserialize = configuration.DeserializeConfigurationSettings;
                 var hostingSettings = Settings.Get<HostingSettings>();
+                var startOptions = new StartOptions(hostingSettings.Url);
 
-                using (WebApp.Start<TStartup>(hostingSettings.Url))
+                // Disable built-in owin tracing by using a null trace output
+                // see: https://stackoverflow.com/questions/37527531/owin-testserver-logs-multiple-times-while-testing-how-can-i-fix-this/37548074#37548074
+                // and: http://stackoverflow.com/questions/17948363/tracelistener-in-owin-self-hosting
+                startOptions.Settings.Add(
+                    typeof(ITraceOutputFactory).FullName,
+                    typeof(NullTraceOutputFactory).AssemblyQualifiedName);
+
+                using (WebApp.Start<TStartup>(startOptions))
                 {
                     Log.Write(string.Format(CultureInfo.InvariantCulture, Messages.Web_Server_Running, hostingSettings.Url));
                     System.Console.WriteLine(Messages.Quit);
