@@ -20,10 +20,19 @@ namespace Spritely.Foundations.WebApi
     /// </summary>
     public static class BasicWebApiLogPolicy
     {
+        private static readonly object Lock = new object();
+        private static EventHandler<InstrumentationEventArgs> logSubscription;
+
+        /// <summary>
+        /// The method called to perform actual logging. Defaults to writing to Trace Listeners.
+        /// </summary>
+        public static WriteLog Log { get; set; } = s => Trace.WriteLine(s);
+
         /// <summary>
         /// Initializes the log policy to write output to Tracing and registers WebApi's
         /// ExceptionLoggerContext object for additional output
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Spritely.Foundations.WebApi.WriteLog.Invoke(System.String)", Justification = "This is pass-through logging.")]
         public static void Initialize()
         {
             Formatter<OwinRequest>.RegisterForMembers(
@@ -40,13 +49,23 @@ namespace Spritely.Foundations.WebApi
 
             Formatter<ExceptionLoggerContext>.RegisterForAllMembers();
 
-            Log.EntryPosted += (sender, args) =>
+            // Reentrancy allowed but expectation is still that users will call only once at startup
+            lock (Lock)
             {
-                var subject = args.LogEntry.Subject ?? string.Empty;
-                var message = DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture) + ": " + subject.ToLogString();
+                if (logSubscription == null)
+                {
+                    logSubscription = (sender, args) =>
+                    {
+                        var subject = args.LogEntry.Subject ?? string.Empty;
+                        var message = DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture) + ": " +
+                                      subject.ToLogString();
 
-                Trace.WriteLine(message);
-            };
+                        Log(message);
+                    };
+
+                    Its.Log.Instrumentation.Log.EntryPosted += logSubscription;
+                }
+            }
         }
     }
 }

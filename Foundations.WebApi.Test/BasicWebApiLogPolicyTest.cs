@@ -20,7 +20,7 @@ namespace Spritely.Foundations.WebApi.Test
     public class BasicWebApiLogPolicyTest
     {
         [Test]
-        public void Initialize_configures_log_policy_that_writes_to_trace_listeners()
+        public void Initialize_configures_log_policy_that_writes_to_trace_listeners_by_default()
         {
             var stringBuilder = new StringBuilder();
             using (var stringWriter = new StringWriter(stringBuilder, CultureInfo.InvariantCulture))
@@ -29,7 +29,7 @@ namespace Spritely.Foundations.WebApi.Test
                 Trace.Listeners.Add(traceListener);
 
                 BasicWebApiLogPolicy.Initialize();
-                Log.Write("Test");
+                Log.Write("Initialize_configures_log_policy_that_writes_to_trace_listeners_by_default");
 
                 // Format should be: "UTC Date: Message"
                 var resultParts = stringBuilder.ToString().Split(':');
@@ -37,9 +37,30 @@ namespace Spritely.Foundations.WebApi.Test
                 var dateString = string.Join(":", resultParts.Reverse().Skip(1).Reverse()); // All but last element
                 var written = DateTime.Parse(dateString, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
 
-                Assert.That(message, Is.EqualTo("Test"));
+                Assert.That(message, Is.EqualTo("Initialize_configures_log_policy_that_writes_to_trace_listeners_by_default"));
                 Assert.That(written, Is.EqualTo(DateTime.Now).Within(TimeSpan.FromMilliseconds(500)));
             }
+        }
+
+        [Test]
+        public void Initialize_configures_log_policy_that_writes_to_custom_destination_when_Log_provided()
+        {
+            var stringBuilder = new StringBuilder();
+
+            BasicWebApiLogPolicy.Initialize();
+            var originalLog = BasicWebApiLogPolicy.Log;
+            BasicWebApiLogPolicy.Log = s => stringBuilder.AppendLine(s);
+            Log.Write("Initialize_configures_log_policy_that_writes_to_custom_destination_when_Log_provided");
+            BasicWebApiLogPolicy.Log = originalLog;
+
+            // Format should be: "UTC Date: Message"
+            var resultParts = stringBuilder.ToString().Split(':');
+            var message = resultParts.Last().Trim();
+            var dateString = string.Join(":", resultParts.Reverse().Skip(1).Reverse()); // All but last element
+            var written = DateTime.Parse(dateString, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
+
+            Assert.That(message, Is.EqualTo("Initialize_configures_log_policy_that_writes_to_custom_destination_when_Log_provided"));
+            Assert.That(written, Is.EqualTo(DateTime.Now).Within(TimeSpan.FromMilliseconds(500)));
         }
     }
 }

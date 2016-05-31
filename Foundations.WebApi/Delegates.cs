@@ -11,6 +11,12 @@ namespace Spritely.Foundations.WebApi
     using SimpleInjector;
 
     /// <summary>
+    /// Delegate abstracting the write logging function.
+    /// </summary>
+    /// <param name="message">The message.</param>
+    public delegate void WriteLog(string message);
+
+    /// <summary>
     /// Delegate representing a container initialization function.
     /// </summary>
     /// <param name="container">The container.</param>
