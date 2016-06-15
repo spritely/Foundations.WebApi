@@ -31,8 +31,18 @@ namespace MyNamespace
                 // you can force assemblies to be loaded (and thus resolvable) by adding parameters as follows:
                 //.UseSettingsContainerInitializer(typeof(MyDatabaseSettings).Assembly, typeof(MyAuthSettings).Assembly)
                 
+                // Have all http requests and http responses logged to Its.Log (which by default go to the .NET trace logger)
+                .UseRequestAndResponseLogging()
+
+                // Enable CORS for incoming requests
+                // Options can be passed in or by default will be read from HostingSettings
+                .UseCors()
+
                 // This will wire up JwtBearerAuthentication from your Its.Configuration files (see example below)
                 .UseJwtBearerAuthentication()
+
+                // This will enable gzip and deflate compression for all responses over 4096 bytes in length
+                .UseGzipDeflateCompression(compressResponsesOver: 4096)
                 
                 // Wire WebApi into OWIN pipeline and pass in any callback functions for setting up the InitializeHttpConfiguration
                 // DefaultWebApiConfig.InitializeHttpConfiguration provides standard controller route mapping and sets Its.Log
@@ -118,7 +128,17 @@ Finally, create a .config folder in your application with a subfolder such as Lo
 
 ```json
 {
-    "url": "https://localhost:443"
+    "url": "https://localhost:443",
+    "cors": {
+        "supportsCredentials": true,
+        "preflightMaxAge": 3600,
+        "origins": [
+            "https://your.website.com",
+            "https://another.website.com"
+        ],
+        "headers": [ "*" ],
+        "methods": [ "*" ]
+    }
 }
 ```
 
@@ -126,8 +146,10 @@ If you are using JWT bearer authentication then you will also need a file called
 
 ```json
 {
-    "id": "AUniqueIdentifierYourOAuthServerUsesToIdentifyThisClient",
-    "name": "Can be any name and is here as documentation",
+    "allowedClients": [
+        "some.clientid.often.your.domain.name.com",
+        "another.clientid.at.your.domain.com"
+    ],
     "allowedServers": [
         {
             "issuer": "http://your.jwt.oauth.server.com",

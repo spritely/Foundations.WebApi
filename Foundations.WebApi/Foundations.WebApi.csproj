@@ -131,6 +131,7 @@
     <Compile Include=".Spritely.Recipes\SecureStringJsonConverter\SecureStringJsonConverter.cs" />
     <Compile Include=".Spritely.Recipes\SecureString\SecureString.cs" />
     <Compile Include="ApiControllerSelector.cs" />
+    <Compile Include="AppBuilder\CompressionExtensions.cs" />
     <Compile Include="AppBuilder\CorsExtensions.cs" />
     <Compile Include="AppBuilder\AppBuilderServiceResolver.cs" />
     <Compile Include="AppBuilder\ItsLogExtensions.cs" />

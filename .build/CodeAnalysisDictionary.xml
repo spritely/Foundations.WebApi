@@ -13,6 +13,7 @@
          <Word>Cors</Word>
          <Word>Auth</Word>
          <Word>Sha</Word>
+         <Word>gzip</Word>
       </Recognized>
       <Deprecated>
          <Term PreferredAlternate=""></Term>

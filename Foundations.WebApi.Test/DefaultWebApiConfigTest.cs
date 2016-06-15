@@ -11,7 +11,6 @@ namespace Spritely.Foundations.WebApi.Test
     using System.Linq;
     using System.Web.Http;
     using System.Web.Http.ExceptionHandling;
-    using Newtonsoft.Json.Serialization;
     using NSubstitute;
     using NUnit.Framework;
     using Spritely.Recipes;
