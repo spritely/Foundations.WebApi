@@ -1,4 +1,4 @@
-# Foundations.WebApi
+# Spritely.Foundations.WebApi
 Provides a default starting point for setting up an Owin WebApi service which includes Its.Configuration and Its.Log with a set of classes that preconfigure numerous defaults. This service can run with or without IIS, however the usage is slightly different as explained below.
 
 ## Usage
@@ -59,9 +59,9 @@ namespace MyNamespace
 }
 ```
 
-Next, you will need to setup your App.config for a console hosted application or Web.config for an IIS hosted application.
-
 ### App.config
+Next, you will need to setup your App.config for a console hosted application.
+
 ```xml
 <configuration>
     <appSettings>
@@ -82,6 +82,7 @@ Next, you will need to setup your App.config for a console hosted application or
 ```
 
 ### Web.config
+Or you will need Web.config for an IIS hosted application.
 ```xml
 <?xml version="1.0"?>
 <configuration>
@@ -124,6 +125,7 @@ Next, you will need to setup your App.config for a console hosted application or
 </configuration>
 ```
 
+### HostingSettings.json
 Finally, create a .config folder in your application with a subfolder such as Local for your environment (must match a name in your configuration's appSettings Its.Configuration.Settings.Precendence value) and then add a file called HostingSettings.json with the following contents (change the Url value as needed):
 
 ```json
@@ -142,6 +144,7 @@ Finally, create a .config folder in your application with a subfolder such as Lo
 }
 ```
 
+### JwtBearerAuthenticationSettings.json
 If you are using JWT bearer authentication then you will also need a file called JwtBearerAuthenticationSettings.json with contents similar to the following:
 
 ```json
@@ -157,6 +160,35 @@ If you are using JWT bearer authentication then you will also need a file called
         }
     ]
 }
+```
+
+JwtBearerAuthenticationSettings.json also permits the use of X509 certificates. If present the certificate's public key will be used to decrypt the JWE (Encrypted JWT) on this server. Certificates can be loaded via a file path (there is also an optional basePath property that defaults to the current directory of the console application if unset):
+
+```json
+{
+    "allowedClients": [ /* ... */ ],
+    "allowedServers": [ /* ... */ ],
+    "relativeFileCertificate": {
+        "relativeFilePath": "/Certificates/MyCertificate.pfx",
+        "password": "my-password",
+        "keyStorageFlags": "machineKeySet, exportable"
+    }
+}
+```
+
+or via the thumbprint of a certificate in the Windows Store:
+
+```json
+{
+    "allowedClients": [ /* ... */ ],
+    "allowedServers": [ /* ... */ ],
+    "storeCertificate": {
+        "certificateThumbprint": "aa1234...."
+    }
+}
+```
+
+Only a single certificate is permitted and it can only be loaded from a single source. Additional optional properties may be supplied to provide additional details for locating a certificate: storeName (defaults to "my"), storeLocation (defaults to "localMachine"), and certificateValidityRequired (defaults to true).
 
 If your application is a console application you should be able to simply build and run it now, or launch it in the Visual Studio debugger. If your application is hosted on IIS, you should be able to point IIS at your development directory with appropriate permissions and build it, point your browser at it, and attach a debugger to it.
 

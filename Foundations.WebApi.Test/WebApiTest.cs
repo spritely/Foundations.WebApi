@@ -15,9 +15,12 @@ namespace Spritely.Foundations.WebApi.Test
     using System.Net;
     using System.Net.Http;
     using System.Security.Claims;
+    using System.Security.Cryptography;
+    using System.Security.Cryptography.X509Certificates;
     using System.Text;
     using System.Threading.Tasks;
     using System.Web.Http;
+    using Jose;
     using Microsoft.Owin;
     using Microsoft.Owin.Security.DataHandler.Encoder;
     using Microsoft.Owin.Testing;
@@ -44,6 +47,26 @@ namespace Spritely.Foundations.WebApi.Test
                     Issuer = "http://auth.localhost",
                     Secret = "pu6txARocfowC1b3eNZEYuNcnTBGwEGfupX9kShMc8U"
                 }
+            }
+        };
+
+        private readonly JwtBearerAuthenticationSettings encryptedJwtBearerAuthenticationSettings = new JwtBearerAuthenticationSettings
+        {
+            AllowedClients = { "my-identifier" },
+            AllowedServers =
+            {
+                new JwtAuthenticationServer
+                {
+                    Issuer = "http://auth.localhost",
+                    Secret = "pu6txARocfowC1b3eNZEYuNcnTBGwEGfupX9kShMc8U"
+                }
+            },
+            RelativeFileCertificate = new RelativeFileCertificate
+            {
+                BasePath = AppDomain.CurrentDomain.BaseDirectory,
+                RelativeFilePath = "Certificates\\TestCertificate.pfx",
+                Password = "Test".ToSecureString(),
+                KeyStorageFlags = X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet
             }
         };
 
@@ -409,6 +432,142 @@ namespace Spritely.Foundations.WebApi.Test
         }
 
         [Test]
+        public async Task Encrypted_jwt_request_with_valid_token_is_accepted()
+        {
+            var certificate = new FileCertificateFetcher(encryptedJwtBearerAuthenticationSettings.RelativeFileCertificate).Fetch();
+            configure = app =>
+                app.UseContainerInitializer(c => c.Register(() => encryptedJwtBearerAuthenticationSettings))
+                    .UseJwtBearerAuthentication()
+                    .UseWebApiWithHttpConfigurationInitializers(DefaultWebApiConfig.InitializeHttpConfiguration);
+
+            using (var server = TestServer.Create<Startup>())
+            {
+                var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost/authorization-required");
+                var accessToken = CreateJwtAccessTokenFor(
+                    jwtBearerAuthenticationSettings.AllowedServers.First().Issuer,
+                    jwtBearerAuthenticationSettings.AllowedClients.First(),
+                    claims: new[] { new Claim("user", "test") },
+                    secret: jwtBearerAuthenticationSettings.AllowedServers.First().Secret,
+                    certificate: certificate);
+
+                request.Headers.Add("Authorization", "bearer " + accessToken);
+
+                var response = await server.HttpClient.SendAsync(request);
+                var result = await response.Content.ReadAsStringAsync();
+
+                Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+                Assert.That(result, Does.StartWith(@"[{""type"":""user"",""value"":""test""},{""type"":""iss"",""value"":""http://auth.localhost""},{""type"":""aud"",""value"":""my-identifier""}"));
+            }
+        }
+
+        [Test]
+        public async Task Encrypted_jwt_request_with_invalid_secret_is_rejected()
+        {
+            var certificate = new FileCertificateFetcher(encryptedJwtBearerAuthenticationSettings.RelativeFileCertificate).Fetch();
+            configure = app =>
+                app.UseContainerInitializer(c => c.Register(() => jwtBearerAuthenticationSettings))
+                    .UseJwtBearerAuthentication()
+                    .UseWebApiWithHttpConfigurationInitializers(DefaultWebApiConfig.InitializeHttpConfiguration);
+
+            using (var server = TestServer.Create<Startup>())
+            {
+                var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost/authorization-required");
+                var accessToken = CreateJwtAccessTokenFor(
+                    jwtBearerAuthenticationSettings.AllowedServers.First().Issuer,
+                    jwtBearerAuthenticationSettings.AllowedClients.First(),
+                    secret: "HayCkqRlBqeILBmvywxwzWsANzQ5YQQaJdjnDPR5CW0",
+                    certificate: certificate);
+
+                request.Headers.Add("Authorization", "bearer " + accessToken);
+
+                var response = await server.HttpClient.SendAsync(request);
+
+                Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
+            }
+        }
+
+        [Test]
+        public async Task Encrypted_jwt_request_with_invalid_issuer_is_rejected()
+        {
+            var certificate = new FileCertificateFetcher(encryptedJwtBearerAuthenticationSettings.RelativeFileCertificate).Fetch();
+            configure = app =>
+                app.UseContainerInitializer(c => c.Register(() => jwtBearerAuthenticationSettings))
+                    .UseJwtBearerAuthentication()
+                    .UseWebApiWithHttpConfigurationInitializers(DefaultWebApiConfig.InitializeHttpConfiguration);
+
+            using (var server = TestServer.Create<Startup>())
+            {
+                var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost/authorization-required");
+                var accessToken = CreateJwtAccessTokenFor(
+                    "http://invalid-issuer.localhost",
+                    jwtBearerAuthenticationSettings.AllowedClients.First(),
+                    secret: jwtBearerAuthenticationSettings.AllowedServers.First().Secret,
+                    certificate: certificate);
+
+                request.Headers.Add("Authorization", "bearer " + accessToken);
+
+                var response = await server.HttpClient.SendAsync(request);
+
+                Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
+            }
+        }
+
+        [Test]
+        public async Task Encrypted_jwt_request_with_invalid_client_id_is_rejected()
+        {
+            var certificate = new FileCertificateFetcher(encryptedJwtBearerAuthenticationSettings.RelativeFileCertificate).Fetch();
+            configure = app =>
+                app.UseContainerInitializer(c => c.Register(() => jwtBearerAuthenticationSettings))
+                    .UseJwtBearerAuthentication()
+                    .UseWebApiWithHttpConfigurationInitializers(DefaultWebApiConfig.InitializeHttpConfiguration);
+
+            using (var server = TestServer.Create<Startup>())
+            {
+                var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost/authorization-required");
+                var accessToken = CreateJwtAccessTokenFor(
+                    jwtBearerAuthenticationSettings.AllowedServers.First().Issuer,
+                    "invalid-client-id",
+                    secret: jwtBearerAuthenticationSettings.AllowedServers.First().Secret,
+                    certificate: certificate);
+
+                request.Headers.Add("Authorization", "bearer " + accessToken);
+
+                var response = await server.HttpClient.SendAsync(request);
+
+                Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
+            }
+        }
+
+        [Test]
+        public async Task Encrypted_jwt_request_with_expired_token_is_rejected()
+        {
+            var certificate = new FileCertificateFetcher(encryptedJwtBearerAuthenticationSettings.RelativeFileCertificate).Fetch();
+            configure = app =>
+                app.UseContainerInitializer(c => c.Register(() => jwtBearerAuthenticationSettings))
+                    .UseJwtBearerAuthentication()
+                    .UseWebApiWithHttpConfigurationInitializers(DefaultWebApiConfig.InitializeHttpConfiguration);
+
+            using (var server = TestServer.Create<Startup>())
+            {
+                var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost/authorization-required");
+                var accessToken = CreateJwtAccessTokenFor(
+                    jwtBearerAuthenticationSettings.AllowedServers.First().Issuer,
+                    jwtBearerAuthenticationSettings.AllowedClients.First(),
+                    expires: DateTime.UtcNow.AddSeconds(1),
+                    secret: jwtBearerAuthenticationSettings.AllowedServers.First().Secret,
+                    certificate: certificate);
+
+                await Task.Delay(TimeSpan.FromSeconds(1.1));
+
+                request.Headers.Add("Authorization", "bearer " + accessToken);
+
+                var response = await server.HttpClient.SendAsync(request);
+
+                Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
+            }
+        }
+
+        [Test]
         public async Task Compression_request_with_short_response_is_uncompressed()
         {
             var expectedResponse = CompactJsonSerializer.SerializeObject(ShortResponseController.Response);
@@ -545,7 +704,7 @@ namespace Spritely.Foundations.WebApi.Test
             return settings;
         }
 
-        private static string CreateJwtAccessTokenFor(string issuer = null, string clientId = null, IEnumerable<Claim> claims = null, DateTime? issued = null, DateTime? expires = null, string secret = null)
+        private static string CreateJwtAccessTokenFor(string issuer = null, string clientId = null, IEnumerable<Claim> claims = null, DateTime? issued = null, DateTime? expires = null, string secret = null, X509Certificate2 certificate = null)
         {
             var securityKey = TextEncodings.Base64Url.Decode(secret);
 
@@ -558,7 +717,9 @@ namespace Spritely.Foundations.WebApi.Test
             var handler = new JwtSecurityTokenHandler();
             var jwt = handler.WriteToken(token);
 
-            return jwt;
+            var publicKey = certificate?.PublicKey?.Key as RSACryptoServiceProvider;
+
+            return (publicKey != null) ? JWT.Encode(jwt, publicKey, JweAlgorithm.RSA_OAEP_256, JweEncryption.A256GCM, JweCompression.DEF) : jwt;
         }
 
         private static async Task<string> Compress(string source, string acceptedEncoding)

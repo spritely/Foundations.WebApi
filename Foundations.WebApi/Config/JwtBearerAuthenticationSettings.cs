@@ -8,9 +8,7 @@
 namespace Spritely.Foundations.WebApi
 {
     using System.Collections.Generic;
-    using System.Linq;
-    using Microsoft.Owin.Security.Jwt;
-    using Microsoft.Owin.Security.DataHandler.Encoder;
+    using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
     /// Provides settings for a JWT authentication client.
@@ -20,46 +18,27 @@ namespace Spritely.Foundations.WebApi
         /// <summary>
         /// Gets or sets the allowed clients.
         /// </summary>
-        /// <value>
-        /// The allowed clients.
-        /// </value>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "This is designed for serialization and deserialization to and from JSON which needs to be able to set this property.")]
+        /// <value>The allowed clients.</value>
+        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "This is designed for serialization and deserialization to and from JSON which needs to be able to set this property.")]
         public ICollection<string> AllowedClients { get; set; } = new List<string>();
 
         /// <summary>
         /// Gets the allowed servers.
         /// </summary>
-        /// <value>
-        /// The allowed servers.
-        /// </value>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "This is designed for serialization and deserialization to and from JSON which needs to be able to set this property.")]
+        /// <value>The allowed servers.</value>
+        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "This is designed for serialization and deserialization to and from JSON which needs to be able to set this property.")]
         public ICollection<JwtAuthenticationServer> AllowedServers { get; set; } = new List<JwtAuthenticationServer>();
 
         /// <summary>
-        /// Performs an implicit conversion from <see cref="JwtBearerAuthenticationSettings"/> to <see cref="JwtBearerAuthenticationOptions"/>.
+        /// Gets or sets the relative file certificate.
         /// </summary>
-        /// <param name="settings">The JWT bearer authentication settings.</param>
-        /// <returns>
-        /// The result of the conversion.
-        /// </returns>
-        public static implicit operator JwtBearerAuthenticationOptions(JwtBearerAuthenticationSettings settings)
-        {
-            if (settings == null)
-            {
-                return null;
-            }
+        /// <value>The relative file certificate.</value>
+        public RelativeFileCertificate RelativeFileCertificate { get; set; }
 
-            return new JwtBearerAuthenticationOptions
-            {
-                AllowedAudiences = settings.AllowedClients,
-                IssuerSecurityTokenProviders = settings.AllowedServers.Select(s =>
-                    new SymmetricKeyIssuerSecurityTokenProvider(s.Issuer, TextEncodings.Base64Url.Decode(s.Secret)))
-            };
-        }
-
-        public JwtBearerAuthenticationOptions ToJwtBearerAuthenticationOptions()
-        {
-            return this;
-        }
+        /// <summary>
+        /// Gets or sets the store certificate.
+        /// </summary>
+        /// <value>The store certificate.</value>
+        public StoreCertificate StoreCertificate { get; set; }
     }
 }

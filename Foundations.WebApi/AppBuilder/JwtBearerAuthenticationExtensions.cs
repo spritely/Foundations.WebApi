@@ -8,6 +8,7 @@
 namespace Spritely.Foundations.WebApi
 {
     using System;
+    using Microsoft.Owin.Security.OAuth;
     using Owin;
 
     /// <summary>
@@ -16,14 +17,18 @@ namespace Spritely.Foundations.WebApi
     public static class JwtBearerAuthenticationExtensions
     {
         /// <summary>
-        /// Adds JWT bearer token middleware to your web application pipeline with client settings resolved from the container.
+        /// Adds JWT bearer token middleware to your web application pipeline with client settings
+        /// resolved from the container.
         /// </summary>
         /// <param name="app">The application.</param>
-        /// <param name="settings">The JWT bearer authentication settings. If unspecified an attempt will be made to load from the container.</param>
-        /// <returns>
-        /// The modified application.
-        /// </returns>
-        public static IAppBuilder UseJwtBearerAuthentication(this IAppBuilder app, JwtBearerAuthenticationSettings settings = null)
+        /// <param name="settings">
+        /// The JWT bearer authentication settings. If unspecified an attempt will be made to load
+        /// from the container.
+        /// </param>
+        /// <returns>The modified application.</returns>
+        public static IAppBuilder UseJwtBearerAuthentication(
+            this IAppBuilder app,
+            JwtBearerAuthenticationSettings settings = null)
         {
             if (app == null)
             {
@@ -37,7 +42,13 @@ namespace Spritely.Foundations.WebApi
                 throw new InvalidOperationException(Messages.Exception_UseJwtBearerAuthentication_NoSettingsProvided);
             }
 
-            return app.UseJwtBearerAuthentication(s.ToJwtBearerAuthenticationOptions());
+            var bearerAuthenticationOptions = new OAuthBearerAuthenticationOptions
+            {
+                AccessTokenFormat = new JoseJwtFormat(s),
+                AuthenticationType = "Bearer"
+            };
+
+            return app.UseOAuthBearerAuthentication(bearerAuthenticationOptions);
         }
     }
 }
