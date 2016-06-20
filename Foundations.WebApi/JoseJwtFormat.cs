@@ -69,8 +69,7 @@ namespace Spritely.Foundations.WebApi
 
             if (settings.RelativeFileCertificate != null && settings.StoreCertificate != null)
             {
-                throw new InvalidOperationException(
-                    "JwtBearerAuthenticationSettings can only specify zero or one certificates to load - either a StoreCertificate, RelativeFileCertificate, or neither (for unencrypted JWT tokens), but not both");
+                throw new InvalidOperationException(Messages.Exception_UnprotectJoseJwt_MultipleOptionsProvided);
             }
 
             var certificateFetcher =

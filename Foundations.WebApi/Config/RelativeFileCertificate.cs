@@ -23,6 +23,7 @@ namespace Spritely.Foundations.WebApi
         /// <value>
         /// The key storage flags.
         /// </value>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Flags", Justification = "Name is designed to match underlying type.")]
         public X509KeyStorageFlags KeyStorageFlags { get; set; }
 
         /// <summary>

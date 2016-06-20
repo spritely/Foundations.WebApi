@@ -70,6 +70,15 @@ namespace Spritely.Foundations.WebApi {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to JwtBearerAuthenticationSettings can only specify zero or one certificates to load - either a StoreCertificate, RelativeFileCertificate, or neither (for unencrypted JWT tokens), but not both..
+        /// </summary>
+        internal static string Exception_UnprotectJoseJwt_MultipleOptionsProvided {
+            get {
+                return ResourceManager.GetString("Exception_UnprotectJoseJwt_MultipleOptionsProvided", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Calling UseCors requires your hosting settings to be configured with the cors property and that at minimum its origins property contain at least one origin value..
         /// </summary>
         internal static string Exception_UseCors_NoSettingsProvided {
