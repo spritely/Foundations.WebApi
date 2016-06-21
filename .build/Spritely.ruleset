@@ -406,6 +406,7 @@
     <Rule Id="IDE0002" Action="Error" />
     <Rule Id="IDE0003" Action="Error" />
     <Rule Id="IDE0004" Action="Error" />
-    <Rule Id="IDE0005" Action="None" />
+    <Rule Id="IDE0005" Action="Error" />
+    <Rule Id="IDE1005" Action="Error" />
   </Rules>
 </RuleSet>

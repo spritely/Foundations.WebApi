@@ -70,7 +70,7 @@ namespace Spritely.Foundations.WebApi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to JwtBearerAuthenticationSettings can only specify zero or one certificates to load - either a StoreCertificate, RelativeFileCertificate, or neither (for unencrypted JWT tokens), but not both..
+        ///   Looks up a localized string similar to JwtBearerAuthenticationSettings can only specify zero or one certificates to load - either a storeCertificate, relativeFileCertificate, or neither (for unencrypted JWT tokens), but not both..
         /// </summary>
         internal static string Exception_UnprotectJoseJwt_MultipleOptionsProvided {
             get {

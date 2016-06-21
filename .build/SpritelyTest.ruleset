@@ -128,7 +128,7 @@
     <Rule Id="CA1809" Action="Error" />
     <Rule Id="CA1810" Action="Error" />
     <Rule Id="CA1811" Action="Error" />
-    <Rule Id="CA1812" Action="Error" />
+    <Rule Id="CA1812" Action="None" />
     <Rule Id="CA1813" Action="Error" />
     <Rule Id="CA1814" Action="Error" />
     <Rule Id="CA1815" Action="Error" />
@@ -406,6 +406,7 @@
     <Rule Id="IDE0002" Action="Error" />
     <Rule Id="IDE0003" Action="Error" />
     <Rule Id="IDE0004" Action="Error" />
-    <Rule Id="IDE0005" Action="None" />
+    <Rule Id="IDE0005" Action="Error" />
+    <Rule Id="IDE1005" Action="Error" />
   </Rules>
 </RuleSet>
