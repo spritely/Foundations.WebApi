@@ -32,6 +32,7 @@ namespace Spritely.Foundations.WebApi.Test
     /// <summary>
     /// Tests of the overall WebApi interface
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "Testing the main surface area for assembly touches on many scenarios.")]
     [TestFixture]
     public class WebApiTest
     {
@@ -304,6 +305,76 @@ namespace Spritely.Foundations.WebApi.Test
                 var header = response.Headers.Single(h => h.Key == "Access-Control-Max-Age");
                 Assert.That(header.Value.Single(), Is.EqualTo("311"));
             }
+        }
+
+        [Test]
+        public void UseJwtBearerAuthentication_throws_when_certificate_configuration_is_ambiguous()
+        {
+            var settings = new JwtBearerAuthenticationSettings
+            {
+                RelativeFileCertificate = new RelativeFileCertificate(),
+                StoreCertificate = new StoreCertificate()
+            };
+
+            var app = Substitute.For<IAppBuilder>();
+            Assert.Throws<InvalidOperationException>(() => app.UseJwtBearerAuthentication(settings));
+        }
+
+        [Test]
+        public void UseJwtBearerAuthentication_throws_when_certificate_cannot_be_loaded()
+        {
+            var settings = new JwtBearerAuthenticationSettings
+            {
+                StoreCertificate = new StoreCertificate
+                {
+                    CertificateThumbprint = "invalidthumbprint"
+                }
+            };
+
+            var app = Substitute.For<IAppBuilder>();
+            Assert.Throws<InvalidOperationException>(() => app.UseJwtBearerAuthentication(settings));
+        }
+
+        [Test]
+        public void UseJwtBearerAuthentication_throws_when_certificate_does_not_contain_private_key()
+        {
+            var settings = new JwtBearerAuthenticationSettings
+            {
+                RelativeFileCertificate = new RelativeFileCertificate
+                {
+                    BasePath = AppDomain.CurrentDomain.BaseDirectory,
+                    RelativeFilePath = "Certificates\\TestCertificate.cer",
+                    Password = "Test".ToSecureString(),
+                    KeyStorageFlags = X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet
+                }
+            };
+
+            var app = Substitute.For<IAppBuilder>();
+            Assert.Throws<InvalidOperationException>(() => app.UseJwtBearerAuthentication(settings));
+        }
+
+        [Test]
+        public void UseJwtBearerAuthentication_throws_when_any_server_secret_is_not_Base64UrlEncoded()
+        {
+            var settings = new JwtBearerAuthenticationSettings
+            {
+                AllowedServers =
+                {
+                    new JwtAuthenticationServer
+                    {
+                        Issuer = "http://auth.localhost",
+                        Secret = "pu6txARocfowC1b3eNZEYuNcnTBGwEGfupX9kShMc8U" // first one is valid
+                    },
+                    new JwtAuthenticationServer
+                    {
+                        Issuer = "http://auth2.localhost",
+                        Secret = "invalid secret"
+                    }
+                }
+            };
+
+            var app = Substitute.For<IAppBuilder>();
+            Assert.Throws<FormatException>(() => app.UseJwtBearerAuthentication(settings));
         }
 
         [Test]

@@ -22,13 +22,14 @@ namespace Spritely.Foundations.WebApi
     public class JoseJwtFormat : ISecureDataFormat<AuthenticationTicket>
     {
         private readonly JwtBearerAuthenticationSettings settings;
+        private readonly RSACryptoServiceProvider privateKey;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JoseJwtFormat"/> class.
         /// </summary>
         /// <param name="settings">The settings.</param>
-        /// <exception cref="System.ArgumentNullException">If any arguments are null.</exception>
-        public JoseJwtFormat(JwtBearerAuthenticationSettings settings)
+        /// <exception cref="System.ArgumentNullException">If settings is null.</exception>
+        public JoseJwtFormat(JwtBearerAuthenticationSettings settings, RSACryptoServiceProvider privateKey)
         {
             if (settings == null)
             {
@@ -36,6 +37,7 @@ namespace Spritely.Foundations.WebApi
             }
 
             this.settings = settings;
+            this.privateKey = privateKey;
         }
 
         /// <summary>
@@ -67,19 +69,6 @@ namespace Spritely.Foundations.WebApi
                 throw new ArgumentNullException(nameof(protectedText));
             }
 
-            if (settings.RelativeFileCertificate != null && settings.StoreCertificate != null)
-            {
-                throw new InvalidOperationException(Messages.Exception_UnprotectJoseJwt_MultipleOptionsProvided);
-            }
-
-            var certificateFetcher =
-                settings.RelativeFileCertificate != null
-                    ? new FileCertificateFetcher(settings.RelativeFileCertificate)
-                    : settings.StoreCertificate != null
-                        ? new StoreByThumbprintCertificateFetcher(settings.StoreCertificate)
-                        : null as ICertificateFetcher;
-
-            var privateKey = certificateFetcher?.Fetch()?.PrivateKey as RSACryptoServiceProvider;
             var jwt = privateKey != null ? JWT.Decode(protectedText, privateKey) : protectedText;
 
             var securityTokenProviders = settings.AllowedServers.Select(

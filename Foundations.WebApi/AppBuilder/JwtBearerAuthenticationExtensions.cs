@@ -8,8 +8,11 @@
 namespace Spritely.Foundations.WebApi
 {
     using System;
+    using System.Security.Cryptography;
+    using Microsoft.Owin.Security.DataHandler.Encoder;
     using Microsoft.Owin.Security.OAuth;
     using Owin;
+    using Spritely.Recipes;
 
     /// <summary>
     /// JWT bearer authentication extensions for IAppBuilder.
@@ -42,9 +45,42 @@ namespace Spritely.Foundations.WebApi
                 throw new InvalidOperationException(Messages.Exception_UseJwtBearerAuthentication_NoSettingsProvided);
             }
 
+            if (s.RelativeFileCertificate != null && s.StoreCertificate != null)
+            {
+                throw new InvalidOperationException(Messages.Exception_UseJwtBearerAuthentication_MultipleOptionsProvided);
+            }
+
+            var certificateFetcher =
+                s.RelativeFileCertificate != null
+                    ? new FileCertificateFetcher(s.RelativeFileCertificate)
+                    : s.StoreCertificate != null
+                        ? new StoreByThumbprintCertificateFetcher(s.StoreCertificate)
+                        : null as ICertificateFetcher;
+
+            RSACryptoServiceProvider privateKey = null;
+            if (certificateFetcher != null)
+            {
+                var certficate = certificateFetcher.Fetch();
+
+                if (certficate == null)
+                {
+                    throw new InvalidOperationException(Messages.Exception_UseJwtBearerAuthentication_CertificateNotFound);
+                }
+
+                privateKey = certficate.PrivateKey as RSACryptoServiceProvider;
+
+                if (privateKey == null)
+                {
+                    throw new InvalidOperationException(Messages.Exception_UseJwtBearerAuthentication_NoPrivateKey);
+                }
+            }
+
+            // Try decoding each secret so it will throw an exception early if there is a configuration problem
+            s.AllowedServers.ForEach(server => TextEncodings.Base64Url.Decode(server.Secret));
+
             var bearerAuthenticationOptions = new OAuthBearerAuthenticationOptions
             {
-                AccessTokenFormat = new JoseJwtFormat(s),
+                AccessTokenFormat = new JoseJwtFormat(s, privateKey),
                 AuthenticationType = "Bearer"
             };
 

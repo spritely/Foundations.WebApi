@@ -70,20 +70,38 @@ namespace Spritely.Foundations.WebApi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to JwtBearerAuthenticationSettings can only specify zero or one certificates to load - either a storeCertificate, relativeFileCertificate, or neither (for unencrypted JWT tokens), but not both..
-        /// </summary>
-        internal static string Exception_UnprotectJoseJwt_MultipleOptionsProvided {
-            get {
-                return ResourceManager.GetString("Exception_UnprotectJoseJwt_MultipleOptionsProvided", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Calling UseCors requires your hosting settings to be configured with the cors property and that at minimum its origins property contain at least one origin value..
         /// </summary>
         internal static string Exception_UseCors_NoSettingsProvided {
             get {
                 return ResourceManager.GetString("Exception_UseCors_NoSettingsProvided", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to load certificate specified by JwtBearerAuthenticationSettings..
+        /// </summary>
+        internal static string Exception_UseJwtBearerAuthentication_CertificateNotFound {
+            get {
+                return ResourceManager.GetString("Exception_UseJwtBearerAuthentication_CertificateNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to JwtBearerAuthenticationSettings may only specify zero or one certificates to load - either a storeCertificate, relativeFileCertificate, or neither (for unencrypted JWT tokens), but not both..
+        /// </summary>
+        internal static string Exception_UseJwtBearerAuthentication_MultipleOptionsProvided {
+            get {
+                return ResourceManager.GetString("Exception_UseJwtBearerAuthentication_MultipleOptionsProvided", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A private key could not be read from the certificate specified by JwtBearerAuthenticationSettings..
+        /// </summary>
+        internal static string Exception_UseJwtBearerAuthentication_NoPrivateKey {
+            get {
+                return ResourceManager.GetString("Exception_UseJwtBearerAuthentication_NoPrivateKey", resourceCulture);
             }
         }
         
