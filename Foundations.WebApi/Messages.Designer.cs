@@ -133,7 +133,7 @@ namespace Spritely.Foundations.WebApi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Web server is running on {0}.
+        ///   Looks up a localized string similar to Web server is running on: {0}.
         /// </summary>
         internal static string Web_Server_Running {
             get {
@@ -142,7 +142,7 @@ namespace Spritely.Foundations.WebApi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Web server on {0} was terminated by a user..
+        ///   Looks up a localized string similar to Web server was terminated by a user..
         /// </summary>
         internal static string Web_Server_Terminated {
             get {

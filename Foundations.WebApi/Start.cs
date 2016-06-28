@@ -13,7 +13,9 @@ namespace Spritely.Foundations.WebApi
     using Newtonsoft.Json;
     using System;
     using System.Globalization;
+    using System.Linq;
     using Microsoft.Owin.Hosting.Tracing;
+    using Spritely.Recipes;
 
     /// <summary>
     /// An object used to Start a Web API service.
@@ -59,7 +61,8 @@ namespace Spritely.Foundations.WebApi
                 var configuration = startupConfiguration ?? new StartupConfiguration();
                 Settings.Deserialize = configuration.DeserializeConfigurationSettings;
                 var hostingSettings = Settings.Get<HostingSettings>();
-                var startOptions = new StartOptions(hostingSettings.Url);
+                var startOptions = new StartOptions(hostingSettings.Urls.First());
+                hostingSettings.Urls.Skip(1).ForEach(startOptions.Urls.Add);
 
                 // Disable built-in owin tracing by using a null trace output
                 // see: https://stackoverflow.com/questions/37527531/owin-testserver-logs-multiple-times-while-testing-how-can-i-fix-this/37548074#37548074
@@ -70,10 +73,9 @@ namespace Spritely.Foundations.WebApi
 
                 using (WebApp.Start<TStartup>(startOptions))
                 {
-                    Log.Write(string.Format(CultureInfo.InvariantCulture, Messages.Web_Server_Running, hostingSettings.Url));
+                    Log.Write(string.Format(CultureInfo.InvariantCulture, Messages.Web_Server_Running, string.Join(", ", hostingSettings.Urls)));
                     System.Console.WriteLine(Messages.Quit);
                     System.Console.ReadKey();
-                    Log.Write(string.Format(CultureInfo.InvariantCulture, Messages.Web_Server_Terminated, hostingSettings.Url));
                 }
             }
             catch (Exception ex)
@@ -81,6 +83,8 @@ namespace Spritely.Foundations.WebApi
                 Log.Write(ex);
                 System.Console.Write(ex);
             }
+
+            Log.Write(string.Format(CultureInfo.InvariantCulture, Messages.Web_Server_Terminated));
         }
     }
 }

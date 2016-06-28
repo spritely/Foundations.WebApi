@@ -143,11 +143,10 @@
     <value>Press any key to quit.</value>
   </data>
   <data name="Web_Server_Running" xml:space="preserve">
-    <value>Web server is running on {0}</value>
-    <comment>0 - Host URL</comment>
+    <value>Web server is running on: {0}</value>
+    <comment>0 - Host URLs</comment>
   </data>
   <data name="Web_Server_Terminated" xml:space="preserve">
-    <value>Web server on {0} was terminated by a user.</value>
-    <comment>0 - Host URL</comment>
+    <value>Web server was terminated by a user.</value>
   </data>
 </root>

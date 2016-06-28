@@ -7,6 +7,8 @@
 
 namespace Spritely.Foundations.WebApi
 {
+    using System.Collections.Generic;
+
     /// <summary>
     /// Object representing the hosting settings.
     /// </summary>
@@ -16,8 +18,7 @@ namespace Spritely.Foundations.WebApi
         /// Gets or sets the URL.
         /// </summary>
         /// <value>The URL.</value>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "This is the type required by WebApi.")]
-        public string Url { get; set; }
+        public ICollection<string> Urls { get; } = new List<string>();
 
         /// <summary>
         /// Gets or sets the CORS settings instance.

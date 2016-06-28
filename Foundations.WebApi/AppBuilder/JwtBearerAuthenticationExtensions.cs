@@ -60,14 +60,14 @@ namespace Spritely.Foundations.WebApi
             RSACryptoServiceProvider privateKey = null;
             if (certificateFetcher != null)
             {
-                var certficate = certificateFetcher.Fetch();
+                var certificate = certificateFetcher.Fetch();
 
-                if (certficate == null)
+                if (certificate == null)
                 {
                     throw new InvalidOperationException(Messages.Exception_UseJwtBearerAuthentication_CertificateNotFound);
                 }
 
-                privateKey = certficate.PrivateKey as RSACryptoServiceProvider;
+                privateKey = certificate.PrivateKey as RSACryptoServiceProvider;
 
                 if (privateKey == null)
                 {

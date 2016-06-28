@@ -110,7 +110,7 @@ Or you will need Web.config for an IIS hosted application.
 		<assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
 			<dependentAssembly>
 				<assemblyIdentity name="Newtonsoft.Json" publicKeyToken="30AD4FE6B2A6AEED" culture="neutral"/>
-				<bindingRedirect oldVersion="0.0.0.0-8.0.0.0" newVersion="8.0.0.0"/>
+				<bindingRedirect oldVersion="0.0.0.0-9.0.0.0" newVersion="9.0.0.0"/>
 			</dependentAssembly>
 			<dependentAssembly>
 				<assemblyIdentity name="System.Web.Http" publicKeyToken="31BF3856AD364E35" culture="neutral"/>
@@ -126,11 +126,11 @@ Or you will need Web.config for an IIS hosted application.
 ```
 
 ### HostingSettings.json
-Finally, create a .config folder in your application with a subfolder such as Local for your environment (must match a name in your configuration's appSettings Its.Configuration.Settings.Precendence value) and then add a file called HostingSettings.json with the following contents (change the Url value as needed):
+Finally, create a .config folder in your application with a subfolder such as Local for your environment (must match a name in your configuration's appSettings Its.Configuration.Settings.Precendence value) and then add a file called HostingSettings.json with the following contents (change the urls as needed):
 
 ```json
 {
-    "url": "https://localhost:443",
+    "urls": [ "https://localhost:443" ],
     "cors": {
         "supportsCredentials": true,
         "preflightMaxAge": 3600,
