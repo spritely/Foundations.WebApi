@@ -17,7 +17,7 @@
         <group>
             <dependency id="Its.Configuration" version="1.0.6" />
             <dependency id="Its.Log" version="2.9.13" />
-            <dependency id="jose-jwt" version="1.9.2" />
+            <dependency id="jose-jwt" version="1.9.3" />
             <dependency id="Microsoft.AspNet.WebApi.Cors" version="5.2.3" />
             <dependency id="Microsoft.AspNet.WebApi.OwinSelfHost" version="5.2.3" />
             <dependency id="Microsoft.Owin.Cors" version="3.0.1" />
