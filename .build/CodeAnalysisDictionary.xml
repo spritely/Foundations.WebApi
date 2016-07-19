@@ -6,14 +6,15 @@
       </Unrecognized>
       <Recognized>
          <Word>Api</Word>
-         <Word>Cqrs</Word>
-         <Word>deserializes</Word>
-         <Word>typeof</Word>
-         <Word>Jwt</Word>
-         <Word>Cors</Word>
          <Word>Auth</Word>
-         <Word>Sha</Word>
+         <Word>Cors</Word>
+         <Word>Cqrs</Word>
+         <Word>Jwt</Word>
+         <Word>deserializes</Word>
+         <Word>parsable</Word>
          <Word>gzip</Word>
+         <Word>Sha</Word>
+         <Word>typeof</Word>
       </Recognized>
       <Deprecated>
          <Term PreferredAlternate=""></Term>
