@@ -25,9 +25,10 @@ namespace Spritely.Foundations.WebApi
         private readonly RSACryptoServiceProvider privateKey;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="JoseJwtFormat"/> class.
+        /// Initializes a new instance of the <see cref="JoseJwtFormat" /> class.
         /// </summary>
         /// <param name="settings">The settings.</param>
+        /// <param name="privateKey">The private key.</param>
         /// <exception cref="System.ArgumentNullException">If settings is null.</exception>
         public JoseJwtFormat(JwtBearerAuthenticationSettings settings, RSACryptoServiceProvider privateKey)
         {
