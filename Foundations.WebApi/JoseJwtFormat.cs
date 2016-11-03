@@ -21,7 +21,7 @@ namespace Spritely.Foundations.WebApi
     /// <seealso cref="Microsoft.Owin.Security.Jwt.JwtFormat"/>
     public class JoseJwtFormat : ISecureDataFormat<AuthenticationTicket>
     {
-        private readonly JwtBearerAuthenticationSettings settings;
+        private readonly JwtAuthenticationSettings settings;
         private readonly RSACryptoServiceProvider privateKey;
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace Spritely.Foundations.WebApi
         /// <param name="settings">The settings.</param>
         /// <param name="privateKey">The private key.</param>
         /// <exception cref="System.ArgumentNullException">If settings is null.</exception>
-        public JoseJwtFormat(JwtBearerAuthenticationSettings settings, RSACryptoServiceProvider privateKey)
+        public JoseJwtFormat(JwtAuthenticationSettings settings, RSACryptoServiceProvider privateKey)
         {
             if (settings == null)
             {

@@ -29,7 +29,7 @@ namespace Spritely.Foundations.WebApi.Test
 
             app.UseSettingsContainerInitializer();
 
-            var settings = app.GetInstance<JwtBearerAuthenticationSettings>();
+            var settings = app.GetInstance<JwtAuthenticationSettings>();
 
             Assert.That(settings, Is.Not.Null);
             Assert.That(settings.AllowedClients.Count, Is.EqualTo(1));

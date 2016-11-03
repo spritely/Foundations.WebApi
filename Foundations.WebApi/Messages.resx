@@ -123,17 +123,17 @@
   <data name="Exception_UseCors_NoSettingsProvided" xml:space="preserve">
     <value>Calling UseCors requires your hosting settings to be configured with the cors property and that at minimum its origins property contain at least one origin value.</value>
   </data>
-  <data name="Exception_UseJwtBearerAuthentication_CertificateNotFound" xml:space="preserve">
-    <value>Unable to load certificate specified by JwtBearerAuthenticationSettings.</value>
+  <data name="Exception_UseJwtAuthentication_CertificateNotFound" xml:space="preserve">
+    <value>Unable to load certificate specified by JwtAuthenticationSettings.</value>
   </data>
-  <data name="Exception_UseJwtBearerAuthentication_MultipleOptionsProvided" xml:space="preserve">
-    <value>JwtBearerAuthenticationSettings may only specify zero or one certificates to load - either a storeCertificate, relativeFileCertificate, or neither (for unencrypted JWT tokens), but not both.</value>
+  <data name="Exception_UseJwtAuthentication_MultipleOptionsProvided" xml:space="preserve">
+    <value>JwtAuthenticationSettings may only specify zero or one certificates to load - either a storeCertificate, relativeFileCertificate, or neither (for unencrypted JWT tokens), but not both.</value>
   </data>
-  <data name="Exception_UseJwtBearerAuthentication_NoPrivateKey" xml:space="preserve">
-    <value>A private key could not be read from the certificate specified by JwtBearerAuthenticationSettings.</value>
+  <data name="Exception_UseJwtAuthentication_NoPrivateKey" xml:space="preserve">
+    <value>A private key could not be read from the certificate specified by JwtAuthenticationSettings.</value>
   </data>
-  <data name="Exception_UseJwtBearerAuthentication_NoSettingsProvided" xml:space="preserve">
-    <value>Could not load JwtBearerAuthenticationSettings from the container; please ensure that the file exists in your configuration and that UseSettingsContainerInitializer has been called or explicitly supply the value when calling UseJwtBearerAuthentication.</value>
+  <data name="Exception_UseJwtAuthentication_NoSettingsProvided" xml:space="preserve">
+    <value>Could not load JwtAuthenticationSettings from the container; please ensure that the file exists in your configuration and that UseSettingsContainerInitializer has been called or explicitly supply the value when calling UseJwtAuthentication.</value>
   </data>
   <data name="Exception_UseSettingsContainerInitializer_NoType" xml:space="preserve">
     <value>Could not locate assembly for {0} when attempting to load settings from configuration; to fix make sure you have a type named {0} and add typeof({0}).Assembly to the list of parameters supplied to UseSettingsContainerInitializer if the assembly is not already loaded into memory already by the main process.</value>

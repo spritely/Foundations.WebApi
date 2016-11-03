@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="JwtBearerAuthenticationSettings.cs">
+// <copyright file="JwtAuthenticationSettings.cs">
 //     Copyright (c) 2016. All rights reserved. Licensed under the MIT license. See LICENSE file in
 //     the project root for full license information.
 // </copyright>
@@ -13,7 +13,7 @@ namespace Spritely.Foundations.WebApi
     /// <summary>
     /// Provides settings for a JWT authentication client.
     /// </summary>
-    public class JwtBearerAuthenticationSettings
+    public class JwtAuthenticationSettings
     {
         /// <summary>
         /// Gets or sets the allowed clients.
@@ -40,5 +40,21 @@ namespace Spritely.Foundations.WebApi
         /// </summary>
         /// <value>The store certificate.</value>
         public StoreCertificate StoreCertificate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the authorization key for form or query string values.
+        /// </summary>
+        /// <value>
+        /// The authorization key for form or query string values.
+        /// </value>
+        public string AuthorizationKey { get; set; }
+
+        /// <summary>
+        /// Gets the authorization priority.
+        /// </summary>
+        /// <value>
+        /// The authorization priority.
+        /// </value>
+        public ICollection<AuthorizationSource> AuthorizationPriority { get; } = new List<AuthorizationSource>(); 
     }
 }

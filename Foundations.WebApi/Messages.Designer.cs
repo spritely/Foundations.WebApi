@@ -79,38 +79,38 @@ namespace Spritely.Foundations.WebApi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to load certificate specified by JwtBearerAuthenticationSettings..
+        ///   Looks up a localized string similar to Unable to load certificate specified by JwtAuthenticationSettings..
         /// </summary>
-        internal static string Exception_UseJwtBearerAuthentication_CertificateNotFound {
+        internal static string Exception_UseJwtAuthentication_CertificateNotFound {
             get {
-                return ResourceManager.GetString("Exception_UseJwtBearerAuthentication_CertificateNotFound", resourceCulture);
+                return ResourceManager.GetString("Exception_UseJwtAuthentication_CertificateNotFound", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to JwtBearerAuthenticationSettings may only specify zero or one certificates to load - either a storeCertificate, relativeFileCertificate, or neither (for unencrypted JWT tokens), but not both..
+        ///   Looks up a localized string similar to JwtAuthenticationSettings may only specify zero or one certificates to load - either a storeCertificate, relativeFileCertificate, or neither (for unencrypted JWT tokens), but not both..
         /// </summary>
-        internal static string Exception_UseJwtBearerAuthentication_MultipleOptionsProvided {
+        internal static string Exception_UseJwtAuthentication_MultipleOptionsProvided {
             get {
-                return ResourceManager.GetString("Exception_UseJwtBearerAuthentication_MultipleOptionsProvided", resourceCulture);
+                return ResourceManager.GetString("Exception_UseJwtAuthentication_MultipleOptionsProvided", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A private key could not be read from the certificate specified by JwtBearerAuthenticationSettings..
+        ///   Looks up a localized string similar to A private key could not be read from the certificate specified by JwtAuthenticationSettings..
         /// </summary>
-        internal static string Exception_UseJwtBearerAuthentication_NoPrivateKey {
+        internal static string Exception_UseJwtAuthentication_NoPrivateKey {
             get {
-                return ResourceManager.GetString("Exception_UseJwtBearerAuthentication_NoPrivateKey", resourceCulture);
+                return ResourceManager.GetString("Exception_UseJwtAuthentication_NoPrivateKey", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not load JwtBearerAuthenticationSettings from the container; please ensure that the file exists in your configuration and that UseSettingsContainerInitializer has been called or explicitly supply the value when calling UseJwtBearerAuthentication..
+        ///   Looks up a localized string similar to Could not load JwtAuthenticationSettings from the container; please ensure that the file exists in your configuration and that UseSettingsContainerInitializer has been called or explicitly supply the value when calling UseJwtAuthentication..
         /// </summary>
-        internal static string Exception_UseJwtBearerAuthentication_NoSettingsProvided {
+        internal static string Exception_UseJwtAuthentication_NoSettingsProvided {
             get {
-                return ResourceManager.GetString("Exception_UseJwtBearerAuthentication_NoSettingsProvided", resourceCulture);
+                return ResourceManager.GetString("Exception_UseJwtAuthentication_NoSettingsProvided", resourceCulture);
             }
         }
         
