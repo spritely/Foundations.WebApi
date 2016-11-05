@@ -9,6 +9,7 @@ namespace Spritely.Foundations.WebApi
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Security.Cryptography;
     using System.Threading.Tasks;
@@ -142,7 +143,22 @@ namespace Spritely.Foundations.WebApi
 
         private static async Task UseForm(OAuthRequestTokenContext context, string authorizationKey)
         {
+            // OWIN/Web API can only read from Body one time and then it is not available any longer
+            // So make a copy of the original stream in memory and replace Body with that stream copy
+            // Stream can now be repositioned after reading so system is unaware it has been accessed
+            // System will dispose this instance and instead we dispose the Body instance for the system
+            var memoryStream = new MemoryStream();
+
+            await context.Request.Body.CopyToAsync(memoryStream);
+            context.Request.Body.Dispose();
+
+            memoryStream.Position = 0;
+            context.Request.Body = memoryStream;
+
+            // Read just as we would have on the original copy, but reset stream for downstream users
             var form = await context.Request.ReadFormAsync();
+            memoryStream.Position = 0;
+
             var formValue = form.Get(authorizationKey);
             context.Token = string.IsNullOrWhiteSpace(formValue) ? context.Token : formValue;
         }
