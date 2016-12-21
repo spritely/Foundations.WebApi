@@ -17,7 +17,7 @@ namespace Spritely.Recipes
     /// <summary>
     ///     Contains methods for converting to/from a secure string.
     /// </summary>
-#if !RecipesProject
+#if !SpritelyRecipesProject
     [System.Diagnostics.DebuggerStepThrough]
     [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     [System.CodeDom.Compiler.GeneratedCode("Spritely.Recipes", "See package version number")]
@@ -64,8 +64,27 @@ namespace Spritely.Recipes
 
             source.Select(action.AsFunc()).ToList();
         }
+
+        /// <summary>
+        /// Sorts the specified source.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns>Sorted source.</returns>
+        /// <exception cref="System.ArgumentNullException">If source is null.</exception>
+        public static IList<T> Sort<T>(this IEnumerable<T> source) where T : IComparable
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException("source");
+            }
+
+            var result = source.ToList();
+            result.Sort();
+
+            return result;
+        }
     }
-#if !RecipesProject
+#if !SpritelyRecipesProject
 #pragma warning restore 0436
 #endif
 }
