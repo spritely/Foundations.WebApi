@@ -120,6 +120,9 @@
   <data name="Application_Started" xml:space="preserve">
     <value>Application started.</value>
   </data>
+  <data name="Exception_ContentDispositionHeaderRequired" xml:space="preserve">
+    <value>Did not find required 'Content-Disposition' header field in MIME multipart body part.</value>
+  </data>
   <data name="Exception_UseCors_NoSettingsProvided" xml:space="preserve">
     <value>Calling UseCors requires your hosting settings to be configured with the cors property and that at minimum its origins property contain at least one origin value.</value>
   </data>

@@ -70,6 +70,15 @@ namespace Spritely.Foundations.WebApi {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Did not find required &apos;Content-Disposition&apos; header field in MIME multipart body part..
+        /// </summary>
+        internal static string Exception_ContentDispositionHeaderRequired {
+            get {
+                return ResourceManager.GetString("Exception_ContentDispositionHeaderRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Calling UseCors requires your hosting settings to be configured with the cors property and that at minimum its origins property contain at least one origin value..
         /// </summary>
         internal static string Exception_UseCors_NoSettingsProvided {

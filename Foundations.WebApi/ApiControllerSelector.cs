@@ -1,4 +1,11 @@
-﻿namespace Spritely.Foundations.WebApi
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ApiControllerSelector.cs">
+//     Copyright (c) 2017. All rights reserved. Licensed under the MIT license. See LICENSE file in
+//     the project root for full license information.
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace Spritely.Foundations.WebApi
 {
     using System;
     using System.Net.Http;

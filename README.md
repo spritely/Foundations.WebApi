@@ -1,5 +1,5 @@
 # Spritely.Foundations.WebApi
-Provides a default starting point for setting up an Owin WebApi service which includes Its.Configuration and Its.Log with a set of classes that preconfigure numerous defaults. This service can run with or without IIS, however the usage is slightly different as explained below.
+Provides a default starting point for setting up an Owin WebApi service which includes Its.Configuration and Its.Log with a set of classes that preconfigure numerous defaults. This service can run with or without IIS, however the usage is slightly different as explained below. Please note that package author only runs services as console applications now so it is possible that newer features will not work correctly under IIS. If Web Api has sufficiently abstracted the host then this shouldn't be a concern.
 
 ## Usage
 Add the NuGet package to your project which will provide it with all the necessary dependencies. Create a Startup.cs file with the following content:
@@ -79,6 +79,12 @@ Next, you will need to setup your App.config for a console hosted application.
         </trace>
     </system.diagnostics>
 </configuration>
+```
+
+Console application projects are setup correctly by default by Visual Studio. However, if you are modifying an existing project you should check your .csproj file to ensure the following property is set correctly or you will have to also add binding redirects to your app.config file (similar to web.config below):
+
+```xml
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 ```
 
 ### Web.config
@@ -192,6 +198,148 @@ Only a single certificate is permitted and it can only be loaded from a single s
 
 If your application is a console application you should be able to simply build and run it now, or launch it in the Visual Studio debugger. If your application is hosted on IIS, you should be able to point IIS at your development directory with appropriate permissions and build it, point your browser at it, and attach a debugger to it.
 
+#### Dual Builds for IIS and Console
 If you would like to have both, then the recommended approach is to first setup the console application. Then create another project for the website version, use a project reference to your console application, and add a NuGet reference to Microsoft.Owin.Host.SystemWeb (this is a runtime dependency only so MSBuild won't copy it to the output folder from the console project dependency without the explicit reference like this). We know you prefer a single project, but because the build outputs in .NET projects are different (/bin/Debug or /bin/Release for console applications/dlls and /bin for websites) they simply do not coexist well on disk unless you want to modify your build output directories. Another problem is that console applications use app.config files while websites use web.config files. While the content we care about is virtually identical they cause a code duplication problem. Again, something you could have your build solve but we don't try to solve that for you.
 
-Despite the litany of build annoyances with these two projects it is still a user friendly solution once you get it setup. With the two project configuration you can run, test, and debug the console and web projects side-by-side locally and just deploy the one you care about. Just do as little as possible in your web application and instead do all the work in your console application and you should get the best of both worlds. Even the .config file will copy from the console project and duplicate into your web project. If you need them to be different though, just add a .config folder in your web project and it will override any files copied from the console application because by default its files will be copied after the files of any dependent assemblies.
+Despite the build annoyances with these two projects it is still a user friendly solution once you get it setup. With the two project configuration you can run, test, and debug the console and web projects side-by-side locally and just deploy the one you care about. Just do as little as possible in your web application and instead do all the work in your console application and you should get the best of both worlds. Even the .config file will copy from the console project and duplicate into your web project. If you need them to be different though, just add a .config folder in your web project and it will override any files copied from the console application because by default its files will be copied after the files of any dependent assemblies.
+
+## Getting Started
+When first initializing your project we recommend you start with very basic code and add on one aspect at a time until you get all the features working.  You can start as follows:
+
+```csharp
+// Startup.cs
+namespace MyNamespace
+{
+    using Owin;
+    using Spritely.Foundations.WebApi;
+
+    public class Startup
+    {
+        public void Configuration(IAppBuilder app)
+        {
+            Start.Initialize();
+            
+            // DefaultWebApiConfig.InitializeHttpConfiguration will not work until we get HostingSettings into the container...
+            app.UseWebApiWithHttpConfigurationInitializers(DefaultWebApiConfig.InitializeHttpConfiguration);
+        }
+
+        // This is only necessary for a console application
+        public static void Main(string[] args)
+        {
+            Start.Console<Startup>();
+        }
+    }
+}
+
+// TestController.cs
+namespace MyNamespace
+{
+    using System.Web.Http;
+
+    public class TestController : ApiController
+    {
+        public IHttpActionResult Get()
+        {
+            return this.Ok(
+                new
+                {
+                    Success = true
+                });
+        }
+    }
+}
+```
+
+You also need your App.config/Web.config setup as above. UseWebApiWithHttpConfigurationInitializers will setup SimpleInjector dependency injection and call back any initializers passed as parameters to build up an HttpConfiguration for Web Api and then it will start Web Api with that configuration. DefaultWebApiConfig.InitializeHttpConfiguration will return a configuration with a default Web Api router and setup all controllers to return JSON responses. It will also attempt to retrieve HostingSettings from the container and use that to determine how to startup the service. So you need to add that file to your project (see above) and put it into the container. To do so modify your Startup.cs class as follows:
+
+```csharp
+// Startup.cs
+public class Startup
+{
+    // Consider putting this method into its own class.
+    private static void InitializeContainer(Container container)
+    {
+        container.RegisterSingleton(Settings.Get<HostingSettings>);
+    }
+
+    public void Configuration(IAppBuilder app)
+    {
+        Start.Initialize();
+        
+        app.UseContainerInitializer(InitializeContainer)
+            .UseWebApiWithHttpConfigurationInitializers(DefaultWebApiConfig.InitializeHttpConfiguration);
+    }
+
+    // rest of code ....
+}
+```
+That's it. Make sure HostingSettings.json is copied into your output directory and now when starting it should automatically load this .json into the HostingSettings class, place it into the container and start the web api where it will be extracted and used to determine the initialize the service. This minimal startup code and you should be able to execute a GET request to the /test url when running. All classes ending in 'Controller' are automatically discovered and made available.
+
+### Console Appliations
+To startup your console application outside of the debugger you will need to setup permissions to host on the url specified in HostingSettings.json for the user running the process or web api will be unable to start the host. You will also need to register a certificate if you are trying to host over SSL.
+
+#### Setup Windows to Host Web Api from a Console app
+To give user permissions to host on a url (trailing slash on url required):
+
+```shell
+D:\Source>netsh http add urlacl url=https://api.mydomain.com:443/ user=MACHINEORDOMAINNAME\user
+
+URL reservation successfully added
+```
+
+To add certificate for a particular host:
+```shell
+D:\Source>netsh http add sslcert hostnameport=api.mydomain.com:443 appid={12345678-db90-4b66-8b01-88f7af2e36bf} certhash=<somehash> certstorename=MY
+```
+
+To see what is installed:
+```shell
+D:\Source>netsh http show sslcert hostnameport=api.mydomain.com:443
+
+SSL Certificate bindings:
+-------------------------
+
+    Hostname:port                : api.mydomain.com:443
+    Certificate Hash             : <certificate hash>
+    Application ID               : {12345678-db90-4b66-8b01-88f7af2e36bf}
+    Certificate Store Name       : MY
+    Verify Client Certificate Revocation : Enabled
+    Verify Revocation Using Cached Client Certificate Only : Disabled
+    Usage Check                  : Enabled
+    Revocation Freshness Time    : 0
+    URL Retrieval Timeout        : 0
+    Ctl Identifier               : (null)
+    Ctl Store Name               : (null)
+    DS Mapper Usage              : Disabled
+    Negotiate Client Certificate : Disabled
+    Reject Connections           : Disabled
+```
+
+To delete certificate:
+
+```shell
+D:\Source\Certificates>netsh http delete sslcert hostnameport=monitoring.api.local.cometrics.com:443
+
+SSL Certificate successfully deleted
+```
+
+### Alternative Code - UseSettingsContainerInitializer
+UseSettingsContainerInitializer can be used instead of a custom container initializer (or you can use both). By using this method the code will try to load every file in the config folder and find a matching class to load the .json into. If the assembly a settings.json file is not loaded yet then that assembly can be passed as a parameter to this method (typeof(MySettingsFile).Assembly) to force it to load early.
+
+```csharp
+// Startup.cs
+public class Startup
+{
+    // InitializeContainer removed
+
+    public void Configuration(IAppBuilder app)
+    {
+        Start.Initialize();
+        
+        app.UseSettingsContainerInitializer()
+            .UseWebApiWithHttpConfigurationInitializers(DefaultWebApiConfig.InitializeHttpConfiguration);
+    }
+
+    // rest of code ....
+}
+```

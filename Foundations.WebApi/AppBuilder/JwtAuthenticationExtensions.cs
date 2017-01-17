@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="JwtAuthenticationExtensions.cs">
-//     Copyright (c) 2016. All rights reserved. Licensed under the MIT license. See LICENSE file in
+//     Copyright (c) 2017. All rights reserved. Licensed under the MIT license. See LICENSE file in
 //     the project root for full license information.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
@@ -63,7 +63,7 @@ namespace Spritely.Foundations.WebApi
             {
                 AccessTokenFormat = new JoseJwtFormat(s, privateKey),
                 AuthenticationType = "Bearer",
-                Provider = new OAuthBearerAuthenticationProvider()
+                Provider = new OAuthBearerAuthenticationProvider
                 {
                     OnRequestToken = async context => await RequestToken(context, s)
                 }
