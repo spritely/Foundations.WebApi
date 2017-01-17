@@ -38,7 +38,7 @@ namespace Spritely.Foundations.WebApi.Test
                 var written = DateTime.Parse(dateString, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
 
                 Assert.That(message, Is.EqualTo("Initialize_configures_log_policy_that_writes_to_trace_listeners_by_default"));
-                Assert.That(written, Is.EqualTo(DateTime.Now).Within(TimeSpan.FromMilliseconds(500)));
+                Assert.That(written, Is.EqualTo(DateTime.Now).Within(TimeSpan.FromMilliseconds(1000)));
             }
         }
 

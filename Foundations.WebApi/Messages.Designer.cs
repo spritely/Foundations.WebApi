@@ -133,6 +133,15 @@ namespace Spritely.Foundations.WebApi {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Value must be greater than or equal to {0}..
+        /// </summary>
+        internal static string Exception_ValueMustBeGreaterThanOrEqualTo {
+            get {
+                return ResourceManager.GetString("Exception_ValueMustBeGreaterThanOrEqualTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Press any key to quit..
         /// </summary>
         internal static string Quit {

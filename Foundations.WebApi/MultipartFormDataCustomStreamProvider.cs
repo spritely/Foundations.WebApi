@@ -12,6 +12,7 @@ namespace Spritely.Foundations.WebApi
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
     using System.Diagnostics.CodeAnalysis;
+    using System.Globalization;
     using System.IO;
     using System.Net.Http;
     using System.Net.Http.Headers;
@@ -55,8 +56,15 @@ namespace Spritely.Foundations.WebApi
         /// <exception cref="ArgumentOutOfRangeException">bufferSize must be greater than or equal to 1.</exception>
         public MultipartFormDataCustomStreamProvider(CreateWriteStream createWriteStream, int bufferSize = DefaultBufferSize)
         {
-            createWriteStream.Must().NotBeNull().OrThrow();
-            bufferSize.Must().BeGreaterThanOrEqualTo(1).OrThrow();
+            if (createWriteStream == null)
+            {
+                throw new ArgumentNullException(nameof(createWriteStream));
+            }
+
+            if (bufferSize < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(bufferSize), bufferSize, string.Format(CultureInfo.InvariantCulture, Messages.Exception_ValueMustBeGreaterThanOrEqualTo, 1));
+            }
 
             this.createWriteStream = createWriteStream;
             BufferSize = bufferSize;
@@ -113,8 +121,15 @@ namespace Spritely.Foundations.WebApi
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Stream is closed by caller (MultipartWriteDelegatingStream is just a wrapper that calls into the inner stream.)")]
         public override Stream GetStream(HttpContent parent, HttpContentHeaders headers)
         {
-            parent.Must().NotBeNull().OrThrow();
-            headers.Must().NotBeNull().OrThrow();
+            if (parent == null)
+            {
+                throw new ArgumentNullException(nameof(parent));
+            }
+
+            if (headers == null)
+            {
+                throw new ArgumentNullException(nameof(headers));
+            }
 
             // For form data, Content-Disposition header is required
             var contentDisposition = headers.ContentDisposition;

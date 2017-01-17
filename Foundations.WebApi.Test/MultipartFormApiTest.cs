@@ -222,8 +222,11 @@ namespace Spritely.Foundations.WebApi.Test
 
             public SimpleMultipartFormController(CreateWriteStream createWriteStream)
             {
-                createWriteStream.Must().NotBeNull().OrThrow();
-
+                if (createWriteStream == null)
+                {
+                    throw new ArgumentNullException(nameof(createWriteStream));
+                }
+                
                 this.createWriteStream = createWriteStream;
             }
 

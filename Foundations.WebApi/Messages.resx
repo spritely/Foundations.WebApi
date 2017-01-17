@@ -142,6 +142,10 @@
     <value>Could not locate assembly for {0} when attempting to load settings from configuration; to fix make sure you have a type named {0} and add typeof({0}).Assembly to the list of parameters supplied to UseSettingsContainerInitializer if the assembly is not already loaded into memory already by the main process.</value>
     <comment>0 - name of the type</comment>
   </data>
+  <data name="Exception_ValueMustBeGreaterThanOrEqualTo" xml:space="preserve">
+    <value>Value must be greater than or equal to {0}.</value>
+    <comment>{0} - Minimum value</comment>
+  </data>
   <data name="Quit" xml:space="preserve">
     <value>Press any key to quit.</value>
   </data>

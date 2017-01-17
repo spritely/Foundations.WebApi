@@ -130,10 +130,10 @@
     <Compile Include="AppBuilder\AppBuilderServiceResolverTest.cs" />
     <Compile Include="AppBuilder\ItsConfigurationExtensionsTest.cs" />
     <Compile Include="AppBuilder\ContainerExtensionsTest.cs" />
+    <Compile Include="BasicApiTest.cs" />
     <Compile Include="CompressionApiTest.cs" />
     <Compile Include="JwtApiTest.cs" />
     <Compile Include="MultipartFormApiTest.cs" />
-    <Compile Include="BasicApiTest.cs" />
     <Compile Include="DefaultWebApiConfigTest.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="JsonSerializerSettingsExtensionsTest.cs" />
