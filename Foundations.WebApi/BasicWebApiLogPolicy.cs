@@ -11,6 +11,7 @@ namespace Spritely.Foundations.WebApi
     using System.Diagnostics;
     using System.Globalization;
     using System.Linq;
+    using System.Threading;
     using System.Web.Http.ExceptionHandling;
     using Its.Log.Instrumentation;
     using Microsoft.Owin;
@@ -20,8 +21,15 @@ namespace Spritely.Foundations.WebApi
     /// </summary>
     public static class BasicWebApiLogPolicy
     {
-        private static readonly object Lock = new object();
-        private static EventHandler<InstrumentationEventArgs> logSubscription;
+        private static int isSubscribed = 0;
+        private static EventHandler<InstrumentationEventArgs> logSubscription = (sender, args) =>
+        {
+            var subject = args.LogEntry.Subject ?? string.Empty;
+            var message = DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture) + ": " +
+                          subject.ToLogString();
+
+            Log(message);
+        };
 
         /// <summary>
         /// The method called to perform actual logging. Defaults to writing to Trace Listeners.
@@ -49,22 +57,10 @@ namespace Spritely.Foundations.WebApi
 
             Formatter<ExceptionLoggerContext>.RegisterForAllMembers();
 
-            // Reentrancy allowed but expectation is still that users will call only once at startup
-            lock (Lock)
+            // Reentrancy allowed but expectation it is still that users will call only once at startup
+            if (Interlocked.CompareExchange(ref isSubscribed, 1, 0) == 0)
             {
-                if (logSubscription == null)
-                {
-                    logSubscription = (sender, args) =>
-                    {
-                        var subject = args.LogEntry.Subject ?? string.Empty;
-                        var message = DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture) + ": " +
-                                      subject.ToLogString();
-
-                        Log(message);
-                    };
-
-                    Its.Log.Instrumentation.Log.EntryPosted += logSubscription;
-                }
+                Its.Log.Instrumentation.Log.EntryPosted += logSubscription;
             }
         }
     }
