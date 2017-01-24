@@ -151,7 +151,9 @@
     <Compile Include="Config\JwtAuthenticationSettings.cs" />
     <Compile Include="Config\JwtAuthenticationServer.cs" />
     <Compile Include="JoseJwtFormat.cs" />
+    <Compile Include="MimeTypeMap.cs" />
     <Compile Include="MultipartFormDataCustomStreamProvider.cs" />
+    <Compile Include="StreamFileResponseExtensions.cs" />
     <Compile Include="StoreByThumbprintCertificateFetcher.cs" />
     <Compile Include="FileCertificateFetcher.cs" />
     <Compile Include="ICertificateFetcher.cs" />

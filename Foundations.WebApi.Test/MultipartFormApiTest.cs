@@ -19,7 +19,6 @@ namespace Spritely.Foundations.WebApi.Test
     using Microsoft.Owin.Testing;
     using NUnit.Framework;
     using Owin;
-    using Spritely.Recipes;
 
     /// <summary>
     /// Multi-part form api tests.
