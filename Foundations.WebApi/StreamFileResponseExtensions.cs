@@ -25,7 +25,6 @@ namespace Spritely.Foundations.WebApi
         /// <param name="value">The value.</param>
         /// <returns>The memory stream.</returns>
         /// <exception cref="System.ArgumentNullException">If value is null.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "User is responsible for disposing instance.")]
         public static MemoryStream ToUtf8MemoryStream(this string value)
         {
             if (value == null)
@@ -44,8 +43,8 @@ namespace Spritely.Foundations.WebApi
         /// </summary>
         /// <param name="bytes">The bytes.</param>
         /// <returns>An HttpContent result.</returns>
-        /// <exception cref="System.ArgumentNullException">If bytes is null.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "User is responsible for disposing instance.")]
+        /// <exception cref="ArgumentNullException">If bytes is null.</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1720:IdentifiersShouldNotContainTypeNames", MessageId = "bytes", Justification = "This parameter name is appropriate for this method.")]
         public static HttpContent ToHttpContent(this byte[] bytes)
         {
             if (bytes == null)
@@ -64,7 +63,6 @@ namespace Spritely.Foundations.WebApi
         /// <param name="stream">The stream.</param>
         /// <returns>An HttpContent result.</returns>
         /// <exception cref="System.ArgumentNullException">If stream is null.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "User is responsible for disposing instance.")]
         public static HttpContent ToHttpContent(this Stream stream)
         {
             if (stream == null)
@@ -82,7 +80,8 @@ namespace Spritely.Foundations.WebApi
         /// </summary>
         /// <param name="file">The file.</param>
         /// <returns>An HttpContent result.</returns>
-        /// <exception cref="System.ArgumentNullException">If file is null.</exception>
+        /// <exception cref="ArgumentNullException">If file is null.</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "Users should not pass other types of FileSystemInfo to this method.")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "User is responsible for disposing instance.")]
         public static HttpContent ToHttpContent(this FileInfo file)
         {
@@ -104,7 +103,9 @@ namespace Spritely.Foundations.WebApi
         /// <param name="file">The file.</param>
         /// <param name="mediaType">The media type for the file. If null, then the media type will be determined from the file extension.</param>
         /// <returns>A ResponseMessageResult ready for Web Api to stream the file content back to a client.</returns>
-        /// <exception cref="System.ArgumentNullException">If file is null.</exception>
+        /// <exception cref="ArgumentNullException">If file is null.</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "ToOk", Justification = "This is not hungarian notation.")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "Users should not pass other types of FileSystemInfo to this method.")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Web Api is responsible for disposing instance.")]
         public static ResponseMessageResult ToOkWithFileResponse(this FileInfo file, string mediaType = null)
         {
@@ -129,7 +130,8 @@ namespace Spritely.Foundations.WebApi
         /// <param name="fileName">Name of the file.</param>
         /// <param name="mediaType">The media type for the file.</param>
         /// <returns>A ResponseMessageResult ready for Web Api to stream the file content back to a client.</returns>
-        /// <exception cref="System.ArgumentNullException">If any of the arguments are null or contain only whitespace.</exception>
+        /// <exception cref="ArgumentNullException">If any of the arguments are null or contain only whitespace.</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "ToOk", Justification = "This is not hungarian notation.")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Web Api is responsible for disposing instance.")]
         public static ResponseMessageResult ToOkWithFileResponse(this HttpContent content, string fileName, string mediaType)
         {

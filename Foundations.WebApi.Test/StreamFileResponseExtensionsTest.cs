@@ -42,7 +42,7 @@ namespace Spritely.Foundations.WebApi.Test
         public void ToUtf8MemoryStream_returns_expected_value()
         {
             var expectedValue = "Some test data";
-            using (var memoryStream = expectedValue.ToUtf8MemoryStream())
+            var memoryStream = expectedValue.ToUtf8MemoryStream();
             using (var reader = new StreamReader(memoryStream))
             {
                 var result = reader.ReadToEnd();
@@ -110,12 +110,14 @@ namespace Spritely.Foundations.WebApi.Test
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "ToOk", Justification = "This is not hungarian notation.")]
         [Test]
         public void ToOkWithFileResponse_with_FileInfo_throws_on_invalid_argument()
         {
             Assert.Throws<ArgumentNullException>(() => (null as FileInfo).ToOkWithFileResponse());
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "ToOk", Justification = "This is not hungarian notation.")]
         [Test]
         public async Task ToOkWithFileResponse_with_FileInfo_and_specified_media_type_returns_expected_response()
         {
@@ -135,6 +137,7 @@ namespace Spritely.Foundations.WebApi.Test
             Assert.That(response.Response.Content.Headers.ContentType.MediaType, Is.EqualTo("text/plain"));
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "ToOk", Justification = "This is not hungarian notation.")]
         [Test]
         public async Task ToOkWithFileResponse_with_FileInfo_and_unspecified_media_type_returns_expected_response()
         {
@@ -154,6 +157,7 @@ namespace Spritely.Foundations.WebApi.Test
             Assert.That(response.Response.Content.Headers.ContentType.MediaType, Is.EqualTo("application/json"));
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "ToOk", Justification = "This is not hungarian notation.")]
         [Test]
         public void ToOkWithFileResponse_with_HttpContent_throws_on_invalid_argument()
         {
@@ -194,6 +198,7 @@ namespace Spritely.Foundations.WebApi.Test
             });
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "ToOk", Justification = "This is not hungarian notation.")]
         [Test]
         public async Task ToOkWithFileResponse_with_HttpContent_returns_expected_response()
         {

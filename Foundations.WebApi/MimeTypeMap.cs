@@ -715,7 +715,7 @@ namespace Spritely.Foundations.WebApi
                 throw new ArgumentNullException("extension");
             }
 
-            if (!extension.StartsWith("."))
+            if (!extension.StartsWith(".", StringComparison.OrdinalIgnoreCase))
             {
                 extension = "." + extension;
             }
@@ -739,7 +739,7 @@ namespace Spritely.Foundations.WebApi
                 throw new ArgumentNullException("mimeType");
             }
 
-            if (mimeType.StartsWith("."))
+            if (mimeType.StartsWith(".", StringComparison.OrdinalIgnoreCase))
             {
                 throw new ArgumentException("Requested mime type is not valid: " + mimeType);
             }
